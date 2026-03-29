@@ -139,6 +139,8 @@ function searchProduct() {
 
 /* WISHLIST */
 function addToWishlist(id) {
+  const product = products.find(p => p.id === id);
+  wishlist.push(product);
   showToast("❤️ Added to Wishlist");
 }
 
@@ -165,3 +167,21 @@ function showToast(msg) {
 /* START */
 loadProducts();
 updateCartCount();
+function viewWishlist() {
+  const modal = document.getElementById("wishlist-modal");
+  const list = document.getElementById("wishlist-items");
+
+  list.innerHTML = "";
+
+  wishlist.forEach(item => {
+    const li = document.createElement("li");
+    li.innerText = item.name;
+    list.appendChild(li);
+  });
+
+  modal.classList.remove("hidden");
+}
+
+function closeWishlist() {
+  document.getElementById("wishlist-modal").classList.add("hidden");
+}
