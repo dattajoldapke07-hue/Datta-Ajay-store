@@ -247,3 +247,33 @@ function confetti(){
     setTimeout(()=>div.remove(),2000);
   }
 }
+function loadAdminProducts(){
+  const list = document.getElementById("admin-product-list");
+  list.innerHTML = "";
+
+  products.forEach(p=>{
+    let li = document.createElement("li");
+
+    li.innerHTML = `
+      ${p.name} - ₹${p.price}
+      <button onclick="deleteProductAdmin(${p.id})">🗑 Remove</button>
+    `;
+
+    list.appendChild(li);
+  });
+}
+
+function deleteProductAdmin(id){
+  let confirmDelete = confirm("Remove this product?");
+  
+  if(confirmDelete){
+    const index = products.findIndex(p => p.id === id);
+    products.splice(index, 1);
+
+    loadProducts();
+    loadAdminProducts();
+    
+
+    showToast("Removed from store 🗑");
+  }
+}
