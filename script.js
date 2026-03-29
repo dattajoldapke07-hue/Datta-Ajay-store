@@ -96,6 +96,9 @@ function checkout() {
 function confirmPayment(){
   document.getElementById("payment-modal").classList.add("hidden");
 
+  let sound = new Audio("https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3");
+  sound.play().catch(()=>{});
+
   let orderId = Math.floor(Math.random()*100000);
 
   document.getElementById("order-box").innerHTML = `
@@ -106,11 +109,21 @@ function confirmPayment(){
 
   document.getElementById("order-box").classList.remove("hidden");
 
+  // 🎉 CONFETTI CALL (YAHAN ADD)
+  confetti();
+
+  // 🕒 DELIVERY TIMER (YAHAN ADD)
+  let time = 10;
+  let interval = setInterval(()=>{
+    document.getElementById("order-box").innerHTML += `<p>Delivery in ${time}s</p>`;
+    time--;
+    if(time==0) clearInterval(interval);
+  },1000);
+
   cart = [];
   localStorage.removeItem("cart");
   updateCartCount();
 }
-
 /* SEARCH */
 function searchProduct() {
   const value = document.getElementById("search").value.toLowerCase();
