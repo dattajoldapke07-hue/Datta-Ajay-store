@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>3D E-Commerce Store</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- 3D Intro Screen -->
+<div id="intro">
+  <h1 class="logo">🛍️ Datta & Ajay's Store</h1>
+</div>
+
+<header>
+  <h1> My E-Commerce Store</h1>
+
+  <!-- ADD -->
+  <input type="text" id="search" placeholder="Search..." onkeyup="searchProduct()">
+  <button onclick="toggleDark()">🌙</button>
+
+  <button onclick="viewCart()">🛒 Cart (<span id="cart-count">00</span>)</button>
+</header>
+
+<section id="products"></section>
+
+<!-- Cart -->
+<div id="cart-modal" class="hidden">
+  <h2>Your Cart</h2>
+  <ul id="cart-items"></ul>
+  <h3>Total: ₹<span id="total">00</span></h3>
+  <button onclick="checkout()">Checkout</button>
+  <button onclick="closeCart()">Close</button>
+</div>
+
+<!-- Payment -->
+<div id="payment-modal" class="hidden">
+  <h2>Payment</h2>
+  <input placeholder="Card Number"><br><br>
+  <input placeholder="Name"><br><br>
+  <input placeholder="CVV"><br><br>
+  <button onclick="confirmPayment()">Pay Now</button>
+</div>
+
+<!-- Order -->
+<div id="order-box" class="hidden"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
