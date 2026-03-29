@@ -181,6 +181,43 @@ function viewWishlist() {
 
   modal.classList.remove("hidden");
 }
+// ADMIN LOGIN (press "a")
+document.addEventListener("keydown", function(e) {
+  if (e.key === "a") {
+    let pass = prompt("Enter Admin Password:");
+    if (pass === "admin123") {
+      openAdminPanel();
+    } else {
+      alert("Wrong Password ❌");
+    }
+  }
+});
+
+function openAdminPanel() {
+  document.getElementById("admin-panel").classList.remove("hidden");
+}
+
+function closeAdmin() {
+  document.getElementById("admin-panel").classList.add("hidden");
+}
+
+function addProduct() {
+  let name = document.getElementById("pname").value;
+  let price = document.getElementById("pprice").value;
+  let img = document.getElementById("pimg").value;
+
+  let newProduct = {
+    id: products.length + 1,
+    name: name,
+    price: Number(price),
+    image: img
+  };
+
+  products.push(newProduct);
+  loadProducts();
+
+  alert("Product Added ✅");
+}
 
 function closeWishlist() {
   document.getElementById("wishlist-modal").classList.add("hidden");
