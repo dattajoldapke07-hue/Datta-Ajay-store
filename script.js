@@ -222,3 +222,15 @@ function addProduct() {
 function closeWishlist() {
   document.getElementById("wishlist-modal").classList.add("hidden");
 }
+function confetti(){
+  for(let i=0;i<30;i++){
+    let div = document.createElement("div");
+    div.innerText="🎉";
+    div.style.position="fixed";
+    div.style.left=Math.random()*100+"%";
+    div.style.top="0";
+    document.body.appendChild(div);
+
+    setTimeout(()=>div.remove(),2000);
+  }
+}
