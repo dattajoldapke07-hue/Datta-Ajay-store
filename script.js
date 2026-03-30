@@ -287,3 +287,32 @@ function login() {
     document.getElementById("error-msg").innerText = "Wrong Username or Password ❌";
   }
 }
+let generatedOTP = "";
+
+function sendOTP() {
+  let mobile = document.getElementById("mobile").value;
+
+  if (mobile.length !== 10 || isNaN(mobile)) {
+    document.getElementById("error-msg").innerText = "Enter valid 10-digit mobile number ❌";
+    return;
+  }
+
+  // fake OTP generate
+  generatedOTP = Math.floor(1000 + Math.random() * 9000);
+
+  alert("Your OTP is: " + generatedOTP); // demo purpose
+
+  document.getElementById("otp-section").style.display = "block";
+  document.getElementById("error-msg").innerText = "";
+}
+
+function verifyOTP() {
+  let userOTP = document.getElementById("otp").value;
+
+  if (userOTP == generatedOTP) {
+    document.getElementById("login-page").style.display = "none";
+    showToast("Login Successful ✅");
+  } else {
+    document.getElementById("error-msg").innerText = "Wrong OTP ❌";
+  }
+      }
