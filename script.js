@@ -102,19 +102,13 @@ function confirmPayment(){
   let orderId = Math.floor(Math.random()*100000);
 
   document.getElementById("order-box").innerHTML = `
-    <h2>🎉 Order Successful</h2>
-    <p>Order ID: ${orderId}</p>
-    <p>Thank You!</p>
-  `;
-
-  document.getElementById("order-box").innerHTML = `
   <h2>🎉 Order Successful</h2>
   <p>Order ID: ${orderId}</p>
   <p>Thank You!</p>
 `;
 
 // delivery message
-document.getElementById("order-box").innerHTML += `<p>🚚 Delivery in 5 days</p>`;
+document.getElementById("order-box").innerHTML += `<p>🚚 Delivery in Few days</p>`;
 
   cart = [];
   localStorage.removeItem("cart");
