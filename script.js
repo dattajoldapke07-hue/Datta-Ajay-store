@@ -107,18 +107,14 @@ function confirmPayment(){
     <p>Thank You!</p>
   `;
 
-  document.getElementById("order-box").classList.remove("hidden");
+  document.getElementById("order-box").innerHTML = `
+  <h2>🎉 Order Successful</h2>
+  <p>Order ID: ${orderId}</p>
+  <p>Thank You!</p>
+`;
 
-  // 🎉 CONFETTI CALL (YAHAN ADD)
-  confetti();
-
-  // 🕒 DELIVERY TIMER (YAHAN ADD)
-  let time = 10;
-  let interval = setInterval(()=>{
-    document.getElementById("order-box").innerHTML += `<p>Delivery in ${time}s</p>`;
-    time--;
-    if(time==0) clearInterval(interval);
-  },1000);
+// delivery message
+document.getElementById("order-box").innerHTML += `<p>🚚 Delivery in 5 days</p>`;
 
   cart = [];
   localStorage.removeItem("cart");
