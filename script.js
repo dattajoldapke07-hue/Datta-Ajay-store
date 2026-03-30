@@ -117,7 +117,12 @@ function confirmPayment(){
 
 // delivery message
 document.getElementById("order-box").innerHTML += `<p>🚚 Arriving in 3-5 days</p>`;
-
+db.collection("orders").add({
+  items: cart,
+  total: document.getElementById("total").innerText
+}).then(() => {
+  alert("Order Saved in Firebase ✅");
+});
   cart = [];
   localStorage.removeItem("cart");
   updateCartCount();
