@@ -108,7 +108,7 @@ function confirmPayment(){
 `;
 
 // delivery message
-document.getElementById("order-box").innerHTML += `<p>🚚 Delivery in Few days</p>`;
+document.getElementById("order-box").innerHTML += `<p>🚚 Delivery in 3-5 days</p>`;
 
   cart = [];
   localStorage.removeItem("cart");
