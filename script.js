@@ -1,11 +1,3 @@
-const firebaseConfig = {
-  apiKey: "AIzaSyAgaQQQsTOdBV1HJqg4lDODkwoXo28QSVY",
-  authDomain: "datta-ajay-store.firebaseapp.com",
-  projectId: "datta-ajay-store",
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
 const products = [
   { id: 1, name: "T-Shirt", price: 500, image: "https://www.freeiconspng.com/uploads/blank-t-shirt-png-16.jpg" },
   { id: 2, name: "Shoes", price: 1500, image: "https://www.pngall.com/wp-content/uploads/5/Men-Shoes-PNG-Image-File.png" },
@@ -110,23 +102,21 @@ function confirmPayment(){
   let orderId = Math.floor(Math.random()*100000);
 
   document.getElementById("order-box").innerHTML = `
-  <h2>🎉 Order Successful</h2>
-  <p>Order ID: ${orderId}</p>
-  <p>Thank You!</p>
-`;
+    <h2>🎉 Order Successful</h2>
+    <p>Order ID: <strong>${orderId}</strong></p>
+    <p>Thank You for Shopping with Us!</p>
+    <p><strong>📦 Arriving in 3-5 business days</strong></p>
+  `;
 
-// delivery message
-document.getElementById("order-box").innerHTML += `<p>🚚 Arriving in 3-5 days</p>`;
-db.collection("orders").add({
-  items: cart,
-  total: document.getElementById("total").innerText
-}).then(() => {
-  alert("Order Saved in Firebase ✅");
-});
+  document.getElementById("order-box").classList.remove("hidden");
+
+  confetti();
+
   cart = [];
   localStorage.removeItem("cart");
   updateCartCount();
 }
+
 /* SEARCH */
 function searchProduct() {
   const value = document.getElementById("search").value.toLowerCase();
@@ -156,14 +146,27 @@ function searchProduct() {
 /* WISHLIST */
 function addToWishlist(id) {
   const product = products.find(p => p.id === id);
+  if(!wishlist.includes(product)) wishlist.push(product);
+  showToast("❤️ Added to Wishlist");
+}
 
-  // duplicate avoid
-  if (!wishlist.find(item => item.id === id)) {
-    wishlist.push(product);
-    showToast("❤️ Added to Wishlist");
-  } else {
-    showToast("Already in Wishlist");
-  }
+function viewWishlist() {
+  const modal = document.getElementById("wishlist-modal");
+  const list = document.getElementById("wishlist-items");
+
+  list.innerHTML = "";
+
+  wishlist.forEach(item => {
+    const li = document.createElement("li");
+    li.innerText = item.name;
+    list.appendChild(li);
+  });
+
+  modal.classList.remove("hidden");
+}
+
+function closeWishlist() {
+  document.getElementById("wishlist-modal").classList.add("hidden");
 }
 
 /* DARK MODE */
@@ -186,24 +189,21 @@ function showToast(msg) {
   setTimeout(() => t.remove(), 2000);
 }
 
-/* START */
-loadProducts();
-updateCartCount();
-function viewWishlist() {
-  const modal = document.getElementById("wishlist-modal");
-  const list = document.getElementById("wishlist-items");
+/* CONFETTI */
+function confetti(){
+  for(let i=0;i<30;i++){
+    let div = document.createElement("div");
+    div.innerText="🎉";
+    div.style.position="fixed";
+    div.style.left=Math.random()*100+"%";
+    div.style.top="0";
+    document.body.appendChild(div);
 
-  list.innerHTML = "";
-
-  wishlist.forEach(item => {
-    const li = document.createElement("li");
-    li.innerText = item.name;
-    list.appendChild(li);
-  });
-
-  modal.classList.remove("hidden");
+    setTimeout(()=>div.remove(),2000);
+  }
 }
-// ADMIN LOGIN (press "a")
+
+/* ADMIN */
 document.addEventListener("keydown", function(e) {
   if (e.key === "a") {
     let pass = prompt("Enter Admin Password:");
@@ -237,37 +237,19 @@ function addProduct() {
 
   products.push(newProduct);
   loadProducts();
-
   alert("Product Added ✅");
 }
 
-function closeWishlist() {
-  document.getElementById("wishlist-modal").classList.add("hidden");
-}
-function confetti(){
-  for(let i=0;i<30;i++){
-    let div = document.createElement("div");
-    div.innerText="🎉";
-    div.style.position="fixed";
-    div.style.left=Math.random()*100+"%";
-    div.style.top="0";
-    document.body.appendChild(div);
-
-    setTimeout(()=>div.remove(),2000);
-  }
-}
 function loadAdminProducts(){
   const list = document.getElementById("admin-product-list");
   list.innerHTML = "";
 
   products.forEach(p=>{
     let li = document.createElement("li");
-
     li.innerHTML = `
       ${p.name} - ₹${p.price}
       <button onclick="deleteProductAdmin(${p.id})">🗑 Remove</button>
     `;
-
     list.appendChild(li);
   });
 }
@@ -281,80 +263,10 @@ function deleteProductAdmin(id){
 
     loadProducts();
     loadAdminProducts();
-    
-
     showToast("Removed from store 🗑");
   }
 }
-function login() {
-  let user = document.getElementById("username").value;
-  let pass = document.getElementById("password").value;
 
-  if (user === "admin" && pass === "1234") {
-    document.getElementById("login-page").style.display = "none";
-  } else {
-    document.getElementById("error-msg").innerText = "Wrong Username or Password ❌";
-  }
-}
-let generatedOTP = "";
-
-function sendOTP() {
-  let mobile = document.getElementById("mobile").value;
-
-  if (mobile.length !== 10 || isNaN(mobile)) {
-    document.getElementById("error-msg").innerText = "Enter valid 10-digit mobile number ❌";
-    return;
-  }
-
-  // fake OTP generate
-  generatedOTP = Math.floor(1000 + Math.random() * 9000);
-
-  alert("Your OTP is: " + generatedOTP); // demo purpose
-
-  document.getElementById("otp-section").style.display = "block";
-  document.getElementById("error-msg").innerText = "";
-}
-
-function verifyOTP() {
-  let userOTP = document.getElementById("otp").value;
-
-  if (userOTP == generatedOTP) {
-    document.getElementById("login-page").style.display = "none";
-    showToast("Login Successful ✅");
-  } else {
-    document.getElementById("error-msg").innerText = "Wrong OTP ❌";
-  }
-      }
-window.onload = function(){
-  document.getElementById("login-page").style.display = "flex";
-};
-let generatedOTP = "";
-
-function sendOTP() {
-  const mobile = document.getElementById("mobile").value;
-
-  if (mobile.length < 10) {
-    document.getElementById("error-msg").innerText = "Enter valid mobile number";
-    return;
-  }
-
-  generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-
-  alert("Your OTP is: " + generatedOTP);
-
-  document.getElementById("otp-section").style.display = "block";
-  document.getElementById("error-msg").innerText = "";
-}
-
-function verifyOTP() {
-  const otp = document.getElementById("otp").value;
-
-  if (otp === generatedOTP) {
-    alert("Login Successful ✅");
-
-    document.getElementById("login-page").style.display = "none";
-    document.getElementById("intro").style.display = "none";
-  } else {
-    document.getElementById("error-msg").innerText = "Invalid OTP ❌";
-  }
-    }
+/* START */
+loadProducts();
+updateCartCount();
