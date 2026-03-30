@@ -277,3 +277,13 @@ function deleteProductAdmin(id){
     showToast("Removed from store 🗑");
   }
 }
+function login() {
+  let user = document.getElementById("username").value;
+  let pass = document.getElementById("password").value;
+
+  if (user === "admin" && pass === "1234") {
+    document.getElementById("login-page").style.display = "none";
+  } else {
+    document.getElementById("error-msg").innerText = "Wrong Username or Password ❌";
+  }
+}
