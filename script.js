@@ -328,3 +328,33 @@ function verifyOTP() {
 window.onload = function(){
   document.getElementById("login-page").style.display = "flex";
 };
+let generatedOTP = "";
+
+function sendOTP() {
+  const mobile = document.getElementById("mobile").value;
+
+  if (mobile.length < 10) {
+    document.getElementById("error-msg").innerText = "Enter valid mobile number";
+    return;
+  }
+
+  generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+
+  alert("Your OTP is: " + generatedOTP);
+
+  document.getElementById("otp-section").style.display = "block";
+  document.getElementById("error-msg").innerText = "";
+}
+
+function verifyOTP() {
+  const otp = document.getElementById("otp").value;
+
+  if (otp === generatedOTP) {
+    alert("Login Successful ✅");
+
+    document.getElementById("login-page").style.display = "none";
+    document.getElementById("intro").style.display = "none";
+  } else {
+    document.getElementById("error-msg").innerText = "Invalid OTP ❌";
+  }
+    }
