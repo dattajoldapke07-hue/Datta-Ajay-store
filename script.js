@@ -143,8 +143,14 @@ function searchProduct() {
 /* WISHLIST */
 function addToWishlist(id) {
   const product = products.find(p => p.id === id);
-  wishlist.push(product);
-  showToast("❤️ Added to Wishlist");
+
+  // duplicate avoid
+  if (!wishlist.find(item => item.id === id)) {
+    wishlist.push(product);
+    showToast("❤️ Added to Wishlist");
+  } else {
+    showToast("Already in Wishlist");
+  }
 }
 
 /* DARK MODE */
