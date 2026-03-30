@@ -1,3 +1,11 @@
+const firebaseConfig = {
+  apiKey: "AIzaSyAgaQQQsTOdBV1HJqg4lDODkwoXo28QSVY",
+  authDomain: "datta-ajay-store.firebaseapp.com",
+  projectId: "datta-ajay-store",
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 const products = [
   { id: 1, name: "T-Shirt", price: 500, image: "https://www.freeiconspng.com/uploads/blank-t-shirt-png-16.jpg" },
   { id: 2, name: "Shoes", price: 1500, image: "https://www.pngall.com/wp-content/uploads/5/Men-Shoes-PNG-Image-File.png" },
