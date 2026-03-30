@@ -325,3 +325,6 @@ function verifyOTP() {
     document.getElementById("error-msg").innerText = "Wrong OTP ❌";
   }
       }
+window.onload = function(){
+  document.getElementById("login-page").style.display = "flex";
+};
