@@ -5,22 +5,94 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Datta & Ajay's Store</title>
 <style>
-  body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg,#ff9a9e,#fad0c4,#fbc2eb); min-height: 100vh; transition: 0.5s; }
+  body { 
+    margin: 0; 
+    font-family: 'Segoe UI', Tahoma, sans-serif; 
+    background: linear-gradient(135deg,#ff9a9e,#fad0c4,#fbc2eb); 
+    min-height: 100vh; 
+  }
   .dark { background: #1a1a1a; color: white; }
-  header { background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(10px); padding: 15px; color: white; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-  header h1 { margin: 0 0 10px 0; font-size: 1.5rem; }
-  .nav-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 15px; }
-  .btn { background: white; color: #333; border: none; padding: 8px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); text-decoration: none; display: inline-block; }
-  .admin-btn { background: #333; color: white; }
-  
-  /* Search Box Styling */
-  .search-container { max-width: 400px; margin: 0 auto; position: relative; }
-  #searchInput { width: 90%; padding: 10px 20px; border-radius: 25px; border: none; outline: none; font-size: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
 
-  #products { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; padding: 20px; max-width: 1200px; margin: auto; }
-  .product { background: white; color: #333; padding: 15px; border-radius: 15px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.1); transition: 0.3s; }
-  .product img { width: 100%; height: 130px; object-fit: cover; border-radius: 10px; }
-  .add-btn { background: #ff6f61; color: white; border: none; padding: 8px; border-radius: 8px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 10px; }
+  header {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    padding: 15px;
+    color: white;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+
+  .nav-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  .btn {
+    background: white;
+    color: #333;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  .admin-btn { background: #333; color: white; }
+
+  /* Search bar styling */
+  .search-box {
+    width: 90%;
+    max-width: 400px;
+    padding: 10px 20px;
+    border-radius: 25px;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  }
+
+  /* Product Grid */
+  #products {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .product {
+    background: white;
+    color: #333;
+    padding: 15px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    transition: 0.3s;
+  }
+  .product:hover { transform: translateY(-5px); }
+  .product img { width: 100%; height: 140px; object-fit: cover; border-radius: 10px; }
+  .product h3 { font-size: 1rem; margin: 10px 0; }
+  .product p { font-weight: bold; color: #ff6f61; font-size: 1.1rem; }
+
+  .add-btn {
+    background: #ff6f61;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    width: 100%;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 5px;
+  }
 </style>
 </head>
 <body>
@@ -28,37 +100,84 @@
 <header>
   <h1>🛒 Datta & Ajay Store</h1>
   <div class="nav-buttons">
-    <a href="admin.html" class="btn admin-btn">🔑 Admin Dashboard</a>
+    <a href="admin.html" class="btn admin-btn">🔑 Admin</a>
     <button class="btn" onclick="toggleDark()">🌙 Dark Mode</button>
     <a href="wishlist.html" class="btn">❤️ Wishlist</a>
-    <a href="cart.html" class="btn">🛒 Cart (<span id="cartCount">0</span>)</a>
+       <a href="cart.html" class="btn">🛒 Cart (<span id="cartCount">0</span>)</a>
   </div>
-  
-  <div class="search-container">
-    <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="Search for products...">
-  </div>
+  <input type="text" id="search" class="search-box" onkeyup="search()" placeholder="Search items...">
 </header>
 
 <section id="products"></section>
 
 <script>
+// 1. Sabse pehle products ka data check karein
 const products = [
-  {id:1,name:"T-Shirt",price:500,image:"https://www.freeiconspng.com/uploads/blank-t-shirt-png-16.jpg"},
-  {id:2,name:"Shoes",price:1500,image:"https://www.pngall.com/wp-content/uploads/5/Men-Shoes-PNG-Image-File.png"},
-  {id:3,name:"Watch",price:2000,image:"https://i.postimg.cc/66k6BKX7/1805QM04-1.jpg"},
-  {id:4,name:"Backpack",price:800,image:"https://images.unsplash.com/photo-1509762774605-f07235a08f1f"},
-  {id:5,name:"Premium Cotton Shirt",price:699,image:"https://i.postimg.cc/mD7ZKp5t/IMG-20260228-WA0050.jpg"},
-  {id:6,name:"Round Sunglass",price:450,image:"https://i.postimg.cc/9FKSqXMf/IMG-20260228-WA0071.jpg"},
-  {id:7,name:"White Shirt",price:299,image:"https://i.postimg.cc/L5bHPdY2/IMG-20260328-WA0044.jpg"},
-  {id:8,name:"Silk Saree",price:1499,image:"https://i.postimg.cc/jqGQHDzF/IMG-20260325-WA0001.jpg"}
+  {id:1, name:"T-Shirt", price:500, image:"https://www.freeiconspng.com/uploads/blank-t-shirt-png-16.jpg"},
+  {id:2, name:"Shoes", price:1500, image:"https://www.pngall.com/wp-content/uploads/5/Men-Shoes-PNG-Image-File.png"},
+  {id:3, name:"Watch", price:2000, image:"https://i.postimg.cc/66k6BKX7/1805QM04-1.jpg"},
+  {id:4, name:"Backpack", price:800, image:"https://images.unsplash.com/photo-1509762774605-f07235a08f1f"},
+  {id:5, name:"Premium Shirt", price:699, image:"https://i.postimg.cc/mD7ZKp5t/IMG-20260228-WA0050.jpg"},
+  {id:6, name:"Sunglass", price:450, image:"https://i.postimg.cc/9FKSqXMf/IMG-20260228-WA0071.jpg"},
+  {id:7, name:"White Shirt", price:299, image:"https://i.postimg.cc/L5bHPdY2/IMG-20260328-WA0044.jpg"},
+  {id:8, name:"Silk Saree", price:1499, image:"https://i.postimg.cc/jqGQHDzF/IMG-20260325-WA0001.jpg"}
 ];
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-function showProducts(){
+// 2. Products dikhane ka function
+function loadProducts() {
   const container = document.getElementById("products");
-  container.innerHTML = "";
+  container.innerHTML = ""; // Clear purana data
+  
   products.forEach(p => {
     container.innerHTML += `
       <div class="product">
+        <img src="${p.image}" alt="${p.name}">
+        <h3>${p.name}</h3>
+        <p>₹${p.price}</p>
+        <button class="add-btn" onclick="addToCart(${p.id})">Add to Cart</button>
+      </div>`;
+  });
+  updateCount();
+}
+
+// 3. Search Functionality
+function search() {
+  let val = document.getElementById("search").value.toLowerCase();
+  let cards = document.getElementsByClassName("product");
   
+  for(let card of cards) {
+    let title = card.querySelector("h3").innerText.toLowerCase();
+    card.style.display = title.includes(val) ? "block" : "none";
+  }
+}
+
+// 4. Add to Cart
+function addToCart(id) {
+  let p = products.find(i => i.id === id);
+  let exist = cart.find(c => c.id === id);
+  if(exist) exist.qty++;
+  else cart.push({...p, qty:1});
+  
+  localStorage.setItem("cart", JSON.stringify(cart));
+  updateCount();
+  alert("Added to Cart ✅");
+}
+
+function updateCount() {
+  document.getElementById("cartCount").innerText = cart.length;
+}
+
+function toggleDark() {
+  document.body.classList.toggle("dark");
+}
+
+// Page load hote hi products dikhao
+window.onload = loadProducts;
+</script>
+
+</body>
+</html>
+
+      
