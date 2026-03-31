@@ -83,13 +83,25 @@ input { padding:10px; width:80%; margin:10px 0; border-radius:5px; border:1px so
 // CART & ORDER
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-function showUPI(){ document.getElementById("upiBox").style.display="block"; document.getElementById("cardBox").style.display="none";}
-function showCard(){ document.getElementById("cardBox").style.display="block"; document.getElementById("upiBox").style.display="none";}
+function showUPI(){ 
+  document.getElementById("upiBox").style.display="block"; 
+  document.getElementById("cardBox").style.display="none";
+}
+function showCard(){ 
+  document.getElementById("cardBox").style.display="block"; 
+  document.getElementById("upiBox").style.display="none";
+}
 
 // PAYMENT FUNCTIONS
 function payUPI(){
   let upi = document.getElementById("upiID").value.trim();
-  if(!upi){ alert("Please enter UPI ID"); return; }
+  
+  // ✅ UPI validation: empty or missing "@"
+  if(!upi || !upi.includes("@")) {
+      alert("❌ Payment Failed: Invalid UPI ID");
+      return;
+  }
+
   completeOrder("UPI");
 }
 
@@ -97,7 +109,10 @@ function payCard(){
   let card = document.getElementById("cardNo").value.trim();
   let exp = document.getElementById("cardExp").value.trim();
   let cvv = document.getElementById("cardCVV").value.trim();
-  if(!card || !exp || !cvv){ alert("Please fill card details"); return; }
+  if(!card || !exp || !cvv){ 
+      alert("Please fill card details"); 
+      return; 
+  }
   completeOrder("Card");
 }
 
@@ -107,7 +122,6 @@ function payCOD(){
 
 // COMPLETE ORDER
 function completeOrder(method){
-  // Save order
   let total = cart.reduce((sum,i)=>sum+i.price*i.qty,0);
   let orders = JSON.parse(localStorage.getItem("orders")) || [];
   orders.push({
