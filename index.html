@@ -3,34 +3,57 @@
 <head>
 <meta charset="UTF-8">
 <title>🛍️ Datta & Ajay's Store</title>
-<link rel="stylesheet" href="style.css">
+<style>
+body { font-family: Arial; text-align:center; margin-top:50px; background:linear-gradient(135deg,#ff9a9e,#fad0c4,#fbc2eb); color:#333;}
+#loginOverlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; justify-content:center; align-items:center; z-index:1000; }
+.login-box { text-align:center; background:rgba(255,255,255,0.1); padding:30px; border-radius:15px; backdrop-filter:blur(10px);}
+.login-box input { display:block; width:220px; margin:10px auto; padding:10px; border-radius:8px; border:none; }
+.login-box button { padding:10px 20px; border:none; border-radius:8px; cursor:pointer; background:#ff6f61; color:white; font-weight:bold; transition:0.3s; }
+.login-box button:hover { background:#ff3b2e; }
+.hidden { display:none; }
+</style>
 </head>
 <body>
-<!-- LOGIN OVERLAY -->
+
 <div id="loginOverlay">
   <div class="login-box">
     <h2>Login to Enter Store</h2>
     <input type="text" id="username" placeholder="Username">
     <input type="password" id="password" placeholder="Password">
-    <!-- Fix: Added proper id="loginBtn" -->
     <button id="loginBtn">Login</button>
     <p id="loginError" style="color:red; display:none;">Invalid username or password!</p>
   </div>
 </div>
 
-<!-- HEADER -->
-<header id="mainHeader" class="hidden">
-  <h1>🛒 Datta & Ajay Store</h1>
-  <div>
-    <button onclick="toggleDark()">🌙</button>
-    <a href="wishlist.html" class="header-btn">❤️ Wishlist</a>
-    <a href="cart.html" class="header-btn">🛒 Cart (<span id="cartCount">0</span>)</a>
-  </div>
-</header>
+<section id="products" class="hidden">
+  <h1>Welcome to Store!</h1>
+  <p>Products will be shown here after login.</p>
+</section>
 
-<!-- PRODUCTS -->
-<section id="products" class="hidden"></section>
+<script>
+// Wait until DOM loaded
+document.addEventListener("DOMContentLoaded", function(){
 
-<script src="script.js"></script>
+    const loginButton = document.getElementById("loginBtn");
+
+    loginButton.addEventListener("click", function(){
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        if(username === "admin" && password === "1234"){
+            // Save login
+            localStorage.setItem("loggedInUser","admin");
+            // Hide login overlay
+            document.getElementById("loginOverlay").style.display = "none";
+            // Show store
+            document.getElementById("products").classList.remove("hidden");
+        } else {
+            document.getElementById("loginError").style.display = "block";
+        }
+    });
+
+});
+</script>
+
 </body>
 </html>
