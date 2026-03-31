@@ -12,16 +12,17 @@
   .dark { background: var(--dark); color: white !important; }
   .hidden { display: none !important; }
 
+  /* HEADER */
   header { background: linear-gradient(135deg, var(--primary), var(--secondary)); padding: 15px; color: white; text-align: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
   .nav-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 10px 0; }
   .btn { background: white; color: var(--primary); border: none; padding: 8px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
   .search-box { width: 85%; padding: 10px 20px; border-radius: 30px; border: none; outline: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
+  /* PRODUCT GRID */
   #products { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; padding: 15px; }
   .product { background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); position: relative; transition: 0.3s; }
-  .product:hover { transform: translateY(-5px); }
   .product img { width: 100%; height: 150px; object-fit: cover; border-radius: 15px; }
-  .wishlist-heart { position: absolute; top: 20px; right: 20px; font-size: 1.2rem; cursor: pointer; color: #ccc; transition: 0.3s; }
+  .wishlist-heart { position: absolute; top: 20px; right: 20px; font-size: 1.2rem; cursor: pointer; color: #ccc; }
   .wishlist-heart.active { color: #ff4757; }
   .add-btn { background: var(--primary); color: white; border: none; padding: 10px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 10px; }
 
@@ -32,22 +33,25 @@
   .sb-body { flex: 1; overflow-y: auto; padding: 15px; }
   .cart-item { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #f9f9f9; padding-bottom: 5px; }
 
-  /* ADMIN CARD */
-  .admin-card { background: #f0f0f0; padding: 10px; border-radius: 10px; margin-bottom: 10px; border-left: 5px solid var(--primary); font-size: 0.8rem; }
+  /* INVOICE MODAL */
+  #receiptModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; padding: 20px; }
+  .invoice-box { background: #fff; width: 100%; max-width: 350px; padding: 25px; border-radius: 5px; box-shadow: 0 0 20px rgba(0,0,0,0.5); font-family: 'Courier New', Courier, monospace; position: relative; color: #000; }
+  .invoice-box::before { content: ""; position: absolute; top: -10px; left: 0; width: 100%; height: 10px; background: linear-gradient(-45deg, #fff 5px, transparent 0), linear-gradient(45deg, #fff 5px, transparent 0); background-size: 10px 10px; }
+  .inv-header { text-align: center; border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px; }
+  .inv-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin: 3px 0; }
 
-  #loginOverlay, #receiptModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; display: flex; justify-content: center; align-items: center; }
-  #loginOverlay { background: var(--primary); }
-  #receiptModal { background: rgba(0,0,0,0.8); display: none; }
-  .modal-box { background: white; width: 85%; max-width: 350px; padding: 25px; border-radius: 20px; text-align: center; }
+  /* LOGIN */
+  #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary); z-index: 10000; display: flex; justify-content: center; align-items: center; }
+  .login-box { background: white; padding: 30px; border-radius: 25px; text-align: center; width: 85%; max-width: 300px; }
 </style>
 </head>
 <body>
 
 <div id="loginOverlay">
-  <div class="modal-box">
-    <h2 style="color:var(--primary);">Welcome! 👋</h2>
+  <div class="login-box">
+    <h2 style="color:var(--primary);">Namaste! 🙏</h2>
     <input type="text" id="userNameInput" style="width:90%; padding:12px; margin:15px 0; border-radius:10px; border:1px solid #ddd; text-align:center;" placeholder="Apna Naam...">
-    <button class="add-btn" onclick="saveUser()">Chalein 🛒</button>
+    <button class="add-btn" onclick="saveUser()">Shopping Shuru Karein 🛒</button>
   </div>
 </div>
 
@@ -63,40 +67,40 @@
 </header>
 
 <main id="mainContent" class="hidden">
-  <div id="wishlistHeader" class="hidden" style="text-align:center; padding:10px;">
-    <button class="btn" onclick="showAllProducts()" style="background:var(--primary); color:white;">⬅️ Back to Store</button>
-  </div>
+  <div id="wishlistHeader" class="hidden" style="text-align:center; padding:10px;"><button class="btn" onclick="showAllProducts()" style="background:var(--primary); color:white;">⬅️ Back to Store</button></div>
   <div id="products"></div>
 </main>
 
 <div id="cartSidebar" class="sidebar">
   <div class="sb-header"><h3>My Cart 🛒</h3><button onclick="closeCart()" style="border:none; background:none; font-size:2rem;">×</button></div>
   <div id="cartItemsList" class="sb-body"></div>
-  <div style="padding:20px; border-top:1px solid #eee;">
-    <h3 id="totalBill" style="text-align:center; color:var(--primary); margin-bottom:10px;">Total: ₹0</h3>
-    <button class="add-btn" style="background:var(--success);" onclick="placeOrder()">PLACE ORDER 🚀</button>
+  <div style="padding:20px; border-top:1px solid #eee; background: #fff;">
+    <h3 id="totalBill" style="text-align:center; color:var(--primary); margin:0 0 10px 0;">Total: ₹0</h3>
+    <label style="font-size: 0.8rem; font-weight: bold;">Select Payment:</label>
+    <select id="payMethod" style="width:100%; padding:10px; margin:5px 0 15px 0; border-radius:8px; border:1px solid #ddd;">
+      <option value="Cash on Delivery">Cash on Delivery (COD)</option>
+      <option value="UPI / Online">UPI / Google Pay</option>
+    </select>
+    <button class="add-btn" style="background:var(--success); font-size:1.1rem;" onclick="placeOrder()">PLACE ORDER 🚀</button>
   </div>
 </div>
 
 <div id="adminSidebar" class="sidebar">
-  <div class="sb-header"><h3>Admin Panel 🔑</h3><button onclick="closeAdmin()" style="border:none; background:none; font-size:2rem;">×</button></div>
-  <div class="sb-body">
-    <h4>Recent Orders</h4>
-    <div id="adminOrderList">No orders yet.</div>
-    <hr>
-    <h4>Add Product</h4>
-    <input type="text" id="newPName" placeholder="Product Name" style="width:90%; padding:8px; margin-bottom:5px;">
-    <input type="number" id="newPPrice" placeholder="Price" style="width:90%; padding:8px; margin-bottom:5px;">
-    <button class="add-btn" onclick="adminAddProduct()">Add Product</button>
-  </div>
+  <div class="sb-header"><h3>Admin Control 🔑</h3><button onclick="closeAdmin()" style="border:none; background:none; font-size:2rem;">×</button></div>
+  <div id="adminOrderList" class="sb-body">No orders yet.</div>
 </div>
 
 <div id="receiptModal">
-  <div class="modal-box" style="border: 2px dashed #333;">
-    <h2 style="color:var(--primary); margin:0;">INVOICE</h2>
-    <div id="receiptContent" style="text-align:left; font-size:0.9rem; line-height:1.6; margin:15px 0;"></div>
-    <p style="font-weight:bold; color:var(--success);">3-5 Days Delivery 🚚</p>
-    <button class="add-btn" onclick="location.reload()">Done</button>
+  <div class="invoice-box">
+    <div class="inv-header">
+      <h3 style="margin:0;">DATTA & AJAY STORE</h3>
+      <p style="margin:0; font-size:0.7rem;">Pune, Maharashtra, India</p>
+    </div>
+    <div id="invMeta" style="font-size:0.75rem; margin-bottom:10px; border-bottom:1px solid #000; padding-bottom:5px;"></div>
+    <div id="invItems" style="min-height: 50px;"></div>
+    <div id="invTotal" style="border-top:1px dashed #000; margin-top:10px; padding-top:5px; font-weight:bold;"></div>
+    <p style="font-size:0.7rem; text-align:center; margin-top:15px;">*** 3-5 Days Delivery Time ***<br>Thank You for Shopping! 🙏</p>
+    <button class="add-btn" style="width:100%; margin-top:10px;" onclick="location.reload()">CLOSE & REFRESH</button>
   </div>
 </div>
 
@@ -106,16 +110,15 @@ const TEMPLATE_ID = "template_x85ytrq";
 const PUBLIC_KEY = "mIOgOSr1AjeDPmz8L";
 emailjs.init(PUBLIC_KEY);
 
-// SARE PRODUCTS WAPAS ADD KIYE
 const defaultProducts = [
-  {id:1, name:"Premium T-Shirt", price:500, image:"https://www.freeiconspng.com/uploads/blank-t-shirt-png-16.jpg"},
-  {id:2, name:"Sneaker Shoes", price:1500, image:"https://www.pngall.com/wp-content/uploads/5/Men-Shoes-PNG-Image-File.png"},
-  {id:3, name:"Luxury Watch", price:2000, image:"https://i.postimg.cc/66k6BKX7/1805QM04-1.jpg"},
-  {id:4, name:"Silk Saree", price:1499, image:"https://i.postimg.cc/jqGQHDzF/IMG-20260325-WA0001.jpg"},
-  {id:5, name:"Formal White Shirt", price:299, image:"https://i.postimg.cc/L5bHPdY2/IMG-20260328-WA0044.jpg"},
-  {id:6, name:"Round Sunglasses", price:450, image:"https://i.postimg.cc/9FKSqXMf/IMG-20260228-WA0071.jpg"},
-  {id:7, name:"Smart Watch Pro", price:3500, image:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400"},
-  {id:8, name:"Gaming Mouse", price:1200, image:"https://images.unsplash.com/photo-1527814050087-379371549a28?w=400"}
+  {id:101, name:"Premium T-Shirt", price:500, image:"https://www.freeiconspng.com/uploads/blank-t-shirt-png-16.jpg"},
+  {id:102, name:"Sneaker Shoes", price:1500, image:"https://www.pngall.com/wp-content/uploads/5/Men-Shoes-PNG-Image-File.png"},
+  {id:103, name:"Luxury Watch", price:2000, image:"https://i.postimg.cc/66k6BKX7/1805QM04-1.jpg"},
+  {id:104, name:"Silk Saree", price:1499, image:"https://i.postimg.cc/jqGQHDzF/IMG-20260325-WA0001.jpg"},
+  {id:105, name:"Formal White Shirt", price:299, image:"https://i.postimg.cc/L5bHPdY2/IMG-20260328-WA0044.jpg"},
+  {id:106, name:"Round Sunglasses", price:450, image:"https://i.postimg.cc/9FKSqXMf/IMG-20260228-WA0071.jpg"},
+  {id:107, name:"Smart Watch Pro", price:3500, image:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400"},
+  {id:108, name:"Gaming Mouse", price:1200, image:"https://images.unsplash.com/photo-1527814050087-379371549a28?w=400"}
 ];
 
 let products = JSON.parse(localStorage.getItem("storeProducts")) || defaultProducts;
@@ -129,26 +132,24 @@ function saveUser() {
 }
 
 function checkUser() {
-  const savedName = localStorage.getItem("customerName");
-  if(savedName) {
+  if(localStorage.getItem("customerName")) {
     document.getElementById("loginOverlay").style.display = "none";
     document.getElementById("mainHeader").classList.remove("hidden");
     document.getElementById("mainContent").classList.remove("hidden");
-    document.getElementById("welcomeGreeting").innerText = `Namaste, ${savedName}!`;
+    document.getElementById("welcomeGreeting").innerText = `Namaste, ${localStorage.getItem("customerName")}!`;
     showStore(); updateUI();
   }
 }
 
 function showStore(items = products){
-  const container = document.getElementById("products");
-  container.innerHTML = items.map(p => {
+  document.getElementById("products").innerHTML = items.map(p => {
     const isWish = wishlist.some(w => w.id === p.id);
     return `<div class="product">
-        <span class="wishlist-heart ${isWish ? 'active' : ''}" onclick="toggleWish(${p.id})">❤️</span>
-        <img src="${p.image}"> 
-        <h4>${p.name}</h4><p style="color:var(--primary); font-weight:bold;">₹${p.price}</p> 
-        <button class="add-btn" onclick="addToCart(${p.id})">Add</button>
-      </div>`;
+      <span class="wishlist-heart ${isWish ? 'active' : ''}" onclick="toggleWish(${p.id})">❤️</span>
+      <img src="${p.image}"> 
+      <h4>${p.name}</h4><p style="color:var(--primary); font-weight:bold;">₹${p.price}</p> 
+      <button class="add-btn" onclick="addToCart(${p.id})">Add to Cart</button>
+    </div>`;
   }).join('');
 }
 
@@ -158,26 +159,34 @@ function updateUI() {
   let total = 0;
   document.getElementById("cartItemsList").innerHTML = cart.map((item, i) => {
     total += item.price;
-    return `<div class="cart-item"><span><b>${item.name}</b><br>₹${item.price}</span>
-            <button onclick="removeCart(${i})" style="color:red; background:none; border:none; cursor:pointer;">🗑️</button></div>`;
+    return `<div class="cart-item"><span><b>${item.name}</b><br>₹${item.price}</span><button onclick="removeCart(${i})" style="color:red; background:none; border:none; cursor:pointer;">🗑️</button></div>`;
   }).join('');
   document.getElementById("totalBill").innerText = `Total: ₹${total}`;
 }
 
 function placeOrder() {
-  if(cart.length === 0) return alert("Cart empty!");
-  const orderID = "DA-" + Math.floor(Math.random()*1000000);
-  const now = new Date();
+  if(cart.length === 0) return alert("Cart is empty! 🛒");
+  
+  const orderID = "INV-" + Math.floor(Math.random()*900000 + 100000);
+  const date = new Date().toLocaleDateString();
+  const time = new Date().toLocaleTimeString();
+  const method = document.getElementById("payMethod").value;
   const total = cart.reduce((s,i)=>s+i.price,0);
   
-  const orderData = { id: orderID, user: localStorage.getItem("customerName"), total: total, date: now.toLocaleString() };
-  allOrders.push(orderData);
+  // Save Order for Admin
+  const newOrder = { id: orderID, user: localStorage.getItem("customerName"), total: total, date: date + " " + time };
+  allOrders.unshift(newOrder);
   localStorage.setItem("allOrders", JSON.stringify(allOrders));
 
-  let itemsText = cart.map(i => i.name + " - ₹" + i.price).join("\n");
-  emailjs.send(SERVICE_ID, TEMPLATE_ID, { from_name: orderData.user, message: `ID: ${orderID}\nDate: ${orderData.date}\nItems:\n${itemsText}\nTotal: ₹${total}` })
+  // Build Real Bill UI
+  document.getElementById("invMeta").innerHTML = `<b>Bill No:</b> ${orderID}<br><b>Customer:</b> ${newOrder.user}<br><b>Date:</b> ${date}<br><b>Time:</b> ${time}<br><b>Payment:</b> ${method}`;
+  document.getElementById("invItems").innerHTML = cart.map(i => `<div class="inv-row"><span>${i.name}</span><span>₹${i.price}</span></div>`).join('');
+  document.getElementById("invTotal").innerHTML = `<div class="inv-row"><span>GRAND TOTAL:</span><span>₹${total}</span></div>`;
+
+  // Email Notification
+  let emailBody = `Order ID: ${orderID}\nPayment: ${method}\n\nItems:\n` + cart.map(i => `- ${i.name}: ₹${i.price}`).join('\n') + `\n\nTotal: ₹${total}`;
+  emailjs.send(SERVICE_ID, TEMPLATE_ID, { from_name: newOrder.user, message: emailBody })
     .then(() => {
-      document.getElementById("receiptContent").innerHTML = `<b>Order ID:</b> ${orderID}<br><b>Name:</b> ${orderData.user}<br><b>Date:</b> ${orderData.date}<br><b>Total Bill:</b> ₹${total}`;
       document.getElementById("receiptModal").style.display = "flex";
       localStorage.removeItem("cart");
     });
@@ -186,18 +195,8 @@ function placeOrder() {
 function openAdmin() {
   if(prompt("Admin Password:") === "1234") {
     document.getElementById("adminSidebar").classList.add("open");
-    document.getElementById("adminOrderList").innerHTML = allOrders.map(o => `<div class="admin-card"><b>ID:</b> ${o.id}<br><b>User:</b> ${o.user}<br><b>Total:</b> ₹${o.total}</div>`).join('');
-  } else { alert("Wrong!"); }
-}
-
-function adminAddProduct() {
-  const name = document.getElementById("newPName").value;
-  const price = document.getElementById("newPPrice").value;
-  if(name && price) {
-    products.push({id: Date.now(), name, price: parseInt(price), image: "https://via.placeholder.com/150"});
-    localStorage.setItem("storeProducts", JSON.stringify(products));
-    showStore(); alert("Added!");
-  }
+    document.getElementById("adminOrderList").innerHTML = allOrders.map(o => `<div style="background:#f0f0f0; padding:10px; margin-bottom:5px; border-radius:5px; font-size:0.75rem;"><b>ID:</b> ${o.id}<br><b>User:</b> ${o.user}<br><b>Total:</b> ₹${o.total}</div>`).join('');
+  } else { alert("Access Denied!"); }
 }
 
 function toggleWish(id){
@@ -211,15 +210,15 @@ function toggleWish(id){
 function addToCart(id){
   cart.push({...products.find(p => p.id === id)});
   localStorage.setItem("cart", JSON.stringify(cart));
-  updateUI(); alert("Added! ✅");
+  updateUI();
 }
 
-function showWishlistPage() { showStore(wishlist); document.getElementById("wishlistHeader").classList.remove("hidden"); }
-function showAllProducts() { showStore(products); document.getElementById("wishlistHeader").classList.add("hidden"); }
 function removeCart(i) { cart.splice(i, 1); localStorage.setItem("cart", JSON.stringify(cart)); updateUI(); }
 function openCart() { document.getElementById("cartSidebar").classList.add("open"); }
 function closeCart() { document.getElementById("cartSidebar").classList.remove("open"); }
 function closeAdmin() { document.getElementById("adminSidebar").classList.remove("open"); }
+function showWishlistPage() { showStore(wishlist); document.getElementById("wishlistHeader").classList.remove("hidden"); }
+function showAllProducts() { showStore(products); document.getElementById("wishlistHeader").classList.add("hidden"); }
 function searchItems() {
   const term = document.getElementById("searchBox").value.toLowerCase();
   showStore(products.filter(p => p.name.toLowerCase().includes(term)));
@@ -229,4 +228,5 @@ function toggleDark() { document.body.classList.toggle("dark"); }
 window.onload = checkUser;
 </script>
 </body>
-    </html>
+      </html>
+  
