@@ -6,34 +6,52 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h1>Your Cart 🛒</h1>
-<div id="cartItems"></div>
-<p id="totalPrice"></p>
-<button onclick="goToPayment()">Proceed to Payment 💳</button>
+<header>
+  <h1>Your Cart 🛒</h1>
+  <a href="index.html"><button>Back to Store</button></a>
+</header>
+
+<div id="cartItems" style="display: flex; flex-wrap: wrap; justify-content: center; padding: 20px;"></div>
+
+<div style="text-align: center; padding: 20px; background: rgba(0,0,0,0.2); border-radius: 15px; margin: 20px;">
+  <h2 id="totalPrice">Total: ₹0</h2>
+  <button onclick="goToPayment()" style="padding: 15px 30px; font-size: 1.2rem; background: #28a745; color: white; border: none; border-radius: 10px; cursor: pointer;">Proceed to Payment 💳</button>
+</div>
 
 <script>
-// Load cart
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-// Show Cart Items
 function showCart(){
   const container = document.getElementById("cartItems");
   container.innerHTML = "";
-  if(cart.length===0){ container.innerHTML="<p>Cart is empty!</p>"; return; }
-  cart.forEach(item=>{
-    container.innerHTML += `<div>
-      <h3>${item.name}</h3>
-      <p>₹${item.price} x ${item.qty}</p>
-    </div>`;
+  if(cart.length === 0){ 
+    container.innerHTML = "<h2 style='color:white;'>Cart is empty!</h2>"; 
+    return; 
+  }
+
+  cart.forEach(item => {
+    container.innerHTML += `
+      <div class="product">
+        <img src="${item.image}" alt="${item.name}" style="width:100px; height:100px; object-fit:cover; border-radius:10px;">
+        <h3>${item.name}</h3>
+        <p>₹${item.price} x ${item.qty}</p>
+        <p>Subtotal: ₹${item.price * item.qty}</p>
+      </div>`;
   });
-  let total = cart.reduce((sum,i)=>sum+i.price*i.qty,0);
-  document.getElementById("totalPrice").innerText = "Total: ₹"+total;
+
+  let total = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+  document.getElementById("totalPrice").innerText = "Total: ₹" + total;
 }
 
-// Go to Payment Page
 function goToPayment(){
-  if(cart.length===0){ alert("Cart is empty!"); return; }
+  if(cart.length === 0){ alert("Cart is empty!"); return; }
   window.location.href = "payment.html";
+}
+
+window.onload = showCart;
+</script>
+</body>
+</html>
 }
 
 window.onload = showCart;
