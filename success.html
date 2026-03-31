@@ -2,25 +2,38 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Payment Success</title>
+<title>Order Success</title>
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
-<h1>✅ Payment Successful!</h1>
-<p id="msg"></p>
-<button onclick="goHome()">Back to Store 🏠</button>
+<body style="text-align: center; padding: 50px;">
+  <div style="background: white; color: #333; padding: 30px; border-radius: 20px; display: inline-block; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+    <h1 style="color: #28a745;">✅ Payment Successful!</h1>
+    <p>Thank you for your order.</p>
+    <hr>
+    <h3>Order Summary (Bill)</h3>
+    <div id="billDetails" style="text-align: left; margin: 20px 0;"></div>
+    <h2 id="finalTotal"></h2>
+    <p>Payment Method: <b id="method"></b></p>
+    <button onclick="goHome()" style="padding: 10px 20px; background: #ff6f61; color: white; border: none; border-radius: 5px; cursor: pointer;">Back to Store 🏠</button>
+  </div>
 
 <script>
-let method = localStorage.getItem("paymentMethod");
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let method = localStorage.getItem("paymentMethod");
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let billDiv = document.getElementById("billDetails");
+  
+  cart.forEach(item => {
+    billDiv.innerHTML += `<p>${item.name} (x${item.qty}) - ₹${item.price * item.qty}</p>`;
+  });
 
-document.getElementById("msg").innerText = 
-`You paid ₹${cart.reduce((sum,i)=>sum+i.price*i.qty,0)} using ${method}.`;
+  let total = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+  document.getElementById("finalTotal").innerText = "Total Paid: ₹" + total;
+  document.getElementById("method").innerText = method;
 
-function goHome(){
-  localStorage.removeItem("cart"); // Empty cart after payment
-  window.location.href = "index.html";
-}
+  function goHome(){
+    localStorage.removeItem("cart"); 
+    window.location.href = "index.html";
+  }
 </script>
 </body>
 </html>
