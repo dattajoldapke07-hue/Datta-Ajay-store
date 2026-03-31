@@ -11,23 +11,28 @@
 <div style="text-align:center; margin-top:20px;">
   <button onclick="checkout()" style="padding:10px 20px;">Proceed to Payment</button>
 </div>
-<script>
-let cart=JSON.parse(localStorage.getItem("cart"))||[];
 
-function showCart(){
-  const container=document.getElementById("cartItems");
-  container.innerHTML="";
-  if(cart.length===0){ container.innerHTML="<p>Cart is empty</p>"; return;}
-  cart.forEach(i=>{
-    container.innerHTML+=`<p>${i.name} x ${i.qty} = ₹${i.price*i.qty}</p>`;
+<script>
+function loadCart() {
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const container = document.getElementById("cartItems");
+  container.innerHTML = "";
+  if (cart.length === 0) {
+    container.innerHTML = "<p>Cart is empty 😢</p>";
+    return;
+  }
+  cart.forEach(i => {
+    container.innerHTML += `<p>${i.name} x ${i.qty} = ₹${i.price * i.qty}</p>`;
   });
 }
-showCart();
 
-function checkout(){
-  if(cart.length===0){ alert("Cart empty!"); return;}
-  window.location.href="payment.html";
+function checkout() {
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  if (cart.length === 0) { alert("Cart is empty!"); return; }
+  window.location.href = "payment.html";
 }
+
+loadCart();
 </script>
 </body>
 </html>
