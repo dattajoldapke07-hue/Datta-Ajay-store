@@ -3,73 +3,72 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Payment</title>
+<title>Checkout - Secure Payment</title>
 <style>
-  /* Sirf itna hi CSS rakhein, extra codes ko delete kar dein */
-  body { 
-    margin: 0; font-family: Arial; 
-    background: linear-gradient(135deg,#ff9a9e,#fad0c4,#fbc2eb); 
-    text-align: center; color: white; padding: 20px;
-  }
-  .payment-container {
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    padding: 20px; border-radius: 20px;
-    display: inline-block; width: 90%; max-width: 400px;
-  }
-  .method-box {
-    background: white; color: #333; margin: 15px 0;
-    padding: 15px; border-radius: 15px; text-align: left;
-  }
-  input {
-    width: 100%; padding: 10px; margin: 10px 0;
-    border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;
-  }
-  .pay-btn {
-    width: 100%; padding: 12px; background: #ff6f61;
-    color: white; border: none; border-radius: 8px;
-    cursor: pointer; font-weight: bold;
-  }
-  .cod-btn { background: #28a745; }
+  body { margin: 0; font-family: Arial; background: linear-gradient(135deg,#ff9a9e,#fad0c4,#fbc2eb); text-align: center; padding: 20px; }
+  .checkout-box { background: white; color: #333; margin: 20px auto; padding: 25px; width: 90%; max-width: 400px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: left; }
+  input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
+  .pay-btn { width: 100%; padding: 15px; background: #ff6f61; color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 1.1rem; font-weight: bold; margin-top: 10px; }
+  .pay-btn:hover { background: #e65b50; }
+  h2 { text-align: center; margin-top: 0; color: #ff6f61; }
+  label { font-weight: bold; font-size: 0.9rem; }
 </style>
 </head>
 <body>
 
-<div class="payment-container">
-  <h2>Payment Method 💳</h2>
+<div class="checkout-box">
+  <h2>Customer Details</h2>
+  
+  <label>Full Name *</label>
+  <input type="text" id="custName" placeholder="Enter your name">
+  
+  <label>Mobile Number *</label>
+  <input type="number" id="custPhone" placeholder="Enter 10 digit mobile">
 
-  <div class="method-box">
-    <strong>UPI Payment</strong>
-    <input type="text" id="upiId" placeholder="Enter UPI ID (e.g. name@upi)">
-    <button class="pay-btn" onclick="checkUPI()">Pay Now</button>
+  <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+  
+  <h2>Payment Method</h2>
+  
+  <div id="upiSection">
+    <label>UPI ID (e.g. name@upi)</label>
+    <input type="text" id="upiInput" placeholder="Enter UPI ID">
+    <button class="pay-btn" onclick="validateAndPay('UPI')">Pay with UPI</button>
   </div>
 
-  <div class="method-box">
-    <strong>Card Payment</strong>
-    <input type="text" placeholder="Card Number">
-    <button class="pay-btn" onclick="proceed('Card')">Pay Now</button>
-  </div>
-
-  <div class="method-box">
-    <button class="pay-btn cod-btn" onclick="proceed('COD')">Cash on Delivery</button>
-  </div>
+  <button class="pay-btn" style="background:#28a745; margin-top: 20px;" onclick="validateAndPay('COD')">Cash on Delivery</button>
 </div>
 
 <script>
-  function checkUPI() {
-    let val = document.getElementById("upiId").value;
-    if (!val.includes("@")) {
-      alert("Invalid UPI ID");
-      return;
-    }
-    proceed('UPI');
+function validateAndPay(method) {
+  let name = document.getElementById("custName").value.trim();
+  let phone = document.getElementById("custPhone").value.trim();
+  let upi = document.getElementById("upiInput").value.trim();
+
+  // 1. Basic Validation
+  if (name === "" || name.length < 3) {
+    alert("❌ Please enter your valid Full Name");
+    return;
+  }
+  if (phone === "" || phone.length < 10) {
+    alert("❌ Please enter a valid 10-digit Mobile Number");
+    return;
   }
 
-  function proceed(method) {
-    localStorage.setItem("paymentMethod", method);
-    window.location.href = "success.html";
+  // 2. UPI Specific Validation
+  if (method === 'UPI') {
+    if (!upi.includes("@")) {
+      alert("❌ Invalid UPI ID! '@' is missing.");
+      return;
+    }
   }
+
+  // 3. Save Customer Info temporarily
+  localStorage.setItem("tempCustomer", JSON.stringify({ name: name, phone: phone }));
+  localStorage.setItem("paymentMethod", method);
+  
+  // Go to success
+  window.location.href = "success.html";
+}
 </script>
 </body>
 </html>
-
