@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Panel - Datta & Ajay Store</title>
+<style>
+  body { font-family: Arial; background: #f0f2f5; padding: 20px; }
+  .header { background: #333; color: white; padding: 20px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
+  .order-list { margin-top: 20px; }
+  .order-card { background: white; margin-bottom: 15px; padding: 20px; border-radius: 10px; border-left: 5px solid #28a745; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+  .item-line { font-size: 0.9rem; color: #555; border-bottom: 1px solid #eee; padding: 5px 0; }
+  .total-price { color: #d9534f; font-weight: bold; font-size: 1.2rem; }
+  .clear-btn { background: #dc3545; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📦 Sales Dashboard</h1>
+  <div>
+    <button class="clear-btn" onclick="clearHistory()">Clear All Data</button>
+    <a href="index.html" style="color:white; margin-left:10px;">Back to Store</a>
+  </div>
+</div>
+
+<div class="order-list" id="orderDisplay"></div>
+
+<script>
+  function displayOrders() {
+    const display = document.getElementById("orderDisplay");
+    let orders = JSON.parse(localStorage.getItem("allOrders")) || [];
+
+    if (orders.length === 0) {
+      display.innerHTML = "<h2 style='text-align:center; color:#888;'>Abhi tak koi order nahi aaya hai.</h2>";
+      return;
+    }
+
+    display.innerHTML = "";
+    // Naye orders upar dikhane ke liye reverse
+    orders.reverse().forEach(order => {
+      let itemsHtml = order.items.map(i => `<div class='item-line'>${i.name} (x${i.qty}) - ₹${i.price * i.qty}</div>`).join("");
+      
+      display.innerHTML += `
+        <div class="order-card">
+          <div style="display:flex; justify-content:space-between;">
+            <strong>Order ID: ${order.id}</strong>
+            <small>${order.date}</small>
+          </div>
+          <div style="margin: 10px 0;">${itemsHtml}</div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span>Payment: <b>${order.payment}</b></span>
+            <span class="total-price">Total: ₹${order.total}</span>
+          </div>
+        </div>`;
+    });
+  }
+
+  function clearHistory() {
+    if (confirm("Kya aap saara sales data delete karna chahte hain?")) {
+      localStorage.removeItem("allOrders");
+      displayOrders();
+    }
+  }
+
+  window.onload = displayOrders;
+</script>
+</body>
+</html>
