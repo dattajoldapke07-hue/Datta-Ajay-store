@@ -19,28 +19,28 @@
   .admin-btn { background: #333 !important; color: white !important; }
 
   .search-container { margin: 10px auto; width: 90%; max-width: 500px; }
-  .search-box { width: 100%; padding: 12px 25px; border-radius: 30px; border: none; outline: none; font-size: 1rem; }
+  .search-box { width: 100%; padding: 12px 25px; border-radius: 30px; border: none; outline: none; font-size: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 
   #products { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; padding: 20px; max-width: 1300px; margin: auto; }
   .product { background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.05); transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; }
   .product img { width: 100%; height: 200px; object-fit: cover; border-radius: 15px; margin-bottom: 10px; }
   
-  .add-btn { background: #ff6f61; color: white; border: none; padding: 10px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; }
+  .add-btn { background: #ff6f61; color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; font-size: 1rem; }
 
   /* Welcome Login Overlay */
-  #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; display: flex; justify-content: center; align-items: center; }
-  .login-box { background: white; padding: 35px; border-radius: 25px; text-align: center; width: 320px; }
-  input[type="text"] { width: 100%; padding: 12px; margin: 15px 0; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; outline: none; }
+  #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ff6f61; z-index: 9999; display: flex; justify-content: center; align-items: center; }
+  .login-box { background: white; padding: 40px; border-radius: 30px; text-align: center; width: 350px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+  #userNameInput { width: 100%; padding: 15px; margin: 20px 0; border-radius: 12px; border: 2px solid #eee; outline: none; font-size: 1rem; text-align: center; }
 </style>
 </head>
 <body>
 
 <div id="loginOverlay">
   <div class="login-box">
-    <h2 style="color:#ff6f61; margin-top:0;">Welcome! 👋</h2>
-    <p>Apna pyara sa naam likho shopping shuru karne ke liye</p>
-    <input type="text" id="userNameInput" placeholder="Enter Your Name">
-    <button class="add-btn" style="padding:15px;" onclick="saveUser()">Start Shopping</button>
+    <h1 style="color:#ff6f61; margin:0;">Namaste! 🙏</h1>
+    <p style="color:#666;">Datta & Ajay Store mein aapka swagat hai.</p>
+    <input type="text" id="userNameInput" placeholder="Apna Naam Likhein...">
+    <button class="add-btn" onclick="saveUser()">Dukaan Mein Chalein 🛒</button>
   </div>
 </div>
 
@@ -48,23 +48,24 @@
   <h1 id="welcomeGreeting">🛒 Datta & Ajay Store</h1>
   
   <div class="nav-buttons">
-    <button class="btn admin-btn" onclick="alert('Admin Panel: Work in Progress!')">🔑 Admin</button>
+    <button class="btn admin-btn" onclick="alert('Admin Mode: Coming Soon!')">🔑 Admin</button>
     <button class="btn" onclick="toggleDark()">🌙 Dark Mode</button>
+    <button class="btn" onclick="logout()">👋 Logout</button>
     <button class="btn">🛒 Cart (<span id="cartCount">0</span>)</button>
   </div>
 
   <div class="search-container">
-    <input type="text" id="searchBox" class="search-box" onkeyup="searchItems()" placeholder="Search anything...">
+    <input type="text" id="searchBox" class="search-box" onkeyup="searchItems()" placeholder="Saree, Shoes, Watch... Kuch bhi search karein!">
   </div>
 </header>
 
-<main>
-  <div id="products" class="hidden"></div>
+<main id="mainContent" class="hidden">
+  <div id="products"></div>
 </main>
 
 <script>
 const products = [
-  // Aapke 8 Products
+  // Aapke Original Products
   {id:1, name:"T-Shirt", price:500, image:"https://www.freeiconspng.com/uploads/blank-t-shirt-png-16.jpg"},
   {id:2, name:"Shoes", price:1500, image:"https://www.pngall.com/wp-content/uploads/5/Men-Shoes-PNG-Image-File.png"},
   {id:3, name:"Watch", price:2000, image:"https://i.postimg.cc/66k6BKX7/1805QM04-1.jpg"},
@@ -74,38 +75,34 @@ const products = [
   {id:7, name:"White Shirt", price:299, image:"https://i.postimg.cc/L5bHPdY2/IMG-20260328-WA0044.jpg"},
   {id:8, name:"Silk Saree", price:1499, image:"https://i.postimg.cc/jqGQHDzF/IMG-20260325-WA0001.jpg"},
   
-  // Mere add kiye hue products
+  // Mere Extra Products
   {id:9, name:"Gaming Mouse", price:1200, image:"https://images.unsplash.com/photo-1527814050087-379371549a28?w=400"},
   {id:10, name:"Smart Watch Pro", price:3500, image:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400"},
   {id:11, name:"Leather Wallet", price:999, image:"https://images.unsplash.com/photo-1627123424574-724758594e93?w=400"},
   {id:12, name:"Bluetooth Speaker", price:2200, image:"https://images.unsplash.com/photo-1608156639585-b3a032ef9689?w=400"},
-  {id:13, name:"Noise Buds", price:4500, image:"https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400"},
-  {id:14, name:"Blue Jeans", price:1800, image:"https://images.unsplash.com/photo-1542272604-787c3835535d?w=400"},
-  {id:15, name:"Coffee Mug", price:400, image:"https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400"},
-  {id:16, name:"Aviators", price:1250, image:"https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400"},
-  {id:17, name:"Fitness Band", price:1999, image:"https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=400"},
-  {id:18, name:"Laptop Stand", price:850, image:"https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400"}
+  {id:13, name:"Wireless Buds", price:4500, image:"https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400"},
+  {id:14, name:"Denim Jeans", price:1800, image:"https://images.unsplash.com/photo-1542272604-787c3835535d?w=400"}
 ];
 
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let cart = [];
 
 // --- LOGIN LOGIC ---
 function saveUser() {
   const name = document.getElementById("userNameInput").value.trim();
   if(name !== "") {
-    localStorage.setItem("storeUserName", name);
+    localStorage.setItem("customerName", name);
     checkUser();
   } else {
-    alert("Bhai naam toh likho!");
+    alert("Kripya apna naam likhein! 😊");
   }
 }
 
 function checkUser() {
-  const savedName = localStorage.getItem("storeUserName");
+  const savedName = localStorage.getItem("customerName");
   if(savedName) {
-    document.getElementById("loginOverlay").classList.add("hidden");
+    document.getElementById("loginOverlay").style.display = "none";
     document.getElementById("mainHeader").classList.remove("hidden");
-    document.getElementById("products").classList.remove("hidden");
+    document.getElementById("mainContent").classList.remove("hidden");
     document.getElementById("welcomeGreeting").innerText = `Welcome, ${savedName}! 🛒`;
     showStore();
   }
@@ -126,7 +123,6 @@ function showStore(items = products){
     `;
     container.appendChild(div);
   });
-  document.getElementById("cartCount").innerText = cart.length;
 }
 
 function searchItems() {
@@ -138,15 +134,20 @@ function searchItems() {
 function addToCart(id){
   let item = products.find(p => p.id === id);
   cart.push(item);
-  localStorage.setItem("cart", JSON.stringify(cart));
   document.getElementById("cartCount").innerText = cart.length;
-  alert(item.name + " added! ✅");
+  alert(item.name + " cart mein gaya! ✅");
 }
 
 function toggleDark(){ document.body.classList.toggle("dark"); }
 
+function logout() {
+  localStorage.removeItem("customerName");
+  location.reload(); // Page reload hote hi Name option wapas aa jayega
+}
+
+// Check on load
 window.onload = checkUser;
 </script>
 </body>
   </html>
-
+  
