@@ -6,16 +6,16 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-  <h1>Your Cart 🛒</h1>
-  <a href="index.html"><button>Back to Store</button></a>
+<header style="display:flex; justify-content: space-between; padding:15px; background:rgba(0,0,0,0.2);">
+  <h1 style="margin:0;">Your Cart 🛒</h1>
+  <a href="index.html"><button style="padding:5px 10px; cursor:pointer;">Back to Store</button></a>
 </header>
 
 <div id="cartItems" style="display: flex; flex-wrap: wrap; justify-content: center; padding: 20px;"></div>
 
-<div style="text-align: center; padding: 20px; background: rgba(0,0,0,0.2); border-radius: 15px; margin: 20px;">
+<div style="background:rgba(0,0,0,0.1); padding:20px; border-radius:15px; margin:20px;">
   <h2 id="totalPrice">Total: ₹0</h2>
-  <button onclick="goToPayment()" style="padding: 15px 30px; font-size: 1.2rem; background: #28a745; color: white; border: none; border-radius: 10px; cursor: pointer;">Proceed to Payment 💳</button>
+  <button onclick="goToPayment()" style="padding:15px 30px; background:#28a745; color:white; border:none; border-radius:10px; cursor:pointer; font-size:1.1rem;">Proceed to Payment 💳</button>
 </div>
 
 <script>
@@ -24,40 +24,28 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 function showCart(){
   const container = document.getElementById("cartItems");
   container.innerHTML = "";
-  if(cart.length === 0){ 
-    container.innerHTML = "<h2 style='color:white;'>Cart is empty!</h2>"; 
-    return; 
-  }
-
-  cart.forEach(item => {
+  if(cart.length===0){ container.innerHTML="<h2>Cart is empty!</h2>"; return; }
+  
+  cart.forEach(item=>{
     container.innerHTML += `
-      <div class="product">
-        <img src="${item.image}" alt="${item.name}" style="width:100px; height:100px; object-fit:cover; border-radius:10px;">
+      <div class="product" style="background:white; color:#333; margin:10px; padding:15px; border-radius:15px; width:200px;">
+        <img src="${item.image}" style="width:100%; border-radius:10px;">
         <h3>${item.name}</h3>
         <p>₹${item.price} x ${item.qty}</p>
-        <p>Subtotal: ₹${item.price * item.qty}</p>
+        <p><b>Subtotal: ₹${item.price * item.qty}</b></p>
       </div>`;
   });
-
-  let total = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
-  document.getElementById("totalPrice").innerText = "Total: ₹" + total;
+  
+  let total = cart.reduce((sum,i)=>sum+i.price*i.qty,0);
+  document.getElementById("totalPrice").innerText = "Total: ₹"+total;
 }
 
 function goToPayment(){
-  if(cart.length === 0){ alert("Cart is empty!"); return; }
+  if(cart.length===0){ alert("Cart is empty!"); return; }
   window.location.href = "payment.html";
 }
 
 window.onload = showCart;
 </script>
 </body>
-</html>
-}
-
-window.onload = showCart;
-</script>
-</body>
-</html>
-</body>
-</html></body>
 </html>
