@@ -2,74 +2,64 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Sales Analytics - Admin Only</title>
+<title>Admin Dashboard</title>
 <style>
-  body { font-family: Arial; background: #f4f7f6; padding: 20px; }
-  .header { background: #333; color: white; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
-  .order-card { background: white; margin-top: 15px; padding: 20px; border-radius: 10px; border-left: 5px solid #28a745; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-  .empty-state { text-align: center; margin-top: 80px; color: #777; }
-  .btn-clear { background: #dc3545; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; }
+  body { font-family: Arial; background: #f0f2f5; padding: 20px; }
+  .header { background: #333; color: white; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .order-card { background: white; margin-bottom: 15px; padding: 20px; border-radius: 12px; border-left: 6px solid #28a745; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+  .cust-info { background: #f9f9f9; padding: 10px; border-radius: 8px; margin: 10px 0; }
+  .item-list { font-size: 0.9rem; color: #666; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+  .total { color: #d9534f; font-weight: bold; font-size: 1.2rem; }
+  .empty { text-align: center; margin-top: 100px; color: #999; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>📊 Store Sales Analytics</h1>
+  <h1>📊 Store Sales Dashboard</h1>
   <div>
-    <button class="btn-clear" onclick="clearData()">Clear All Records</button>
-    <a href="index.html" style="color:white; margin-left:15px; text-decoration:none;">🏠 Logout</a>
+    <button onclick="localStorage.removeItem('allOrders'); location.reload();" style="background:#dc3545; color:white; border:none; padding:10px; border-radius:6px; cursor:pointer;">Clear All History</button>
+    <a href="index.html" style="color:white; margin-left:15px; text-decoration:none;">Logout 🏠</a>
   </div>
 </div>
 
-<div id="orderDisplay"></div>
+<div id="display"></div>
 
 <script>
-  // Simple check: Agar user direct link se aaya hai toh wapas bhej do
   if (document.referrer === "" || !document.referrer.includes("index.html")) {
-    alert("Please access through Admin Login on the Home Page.");
     window.location.href = "index.html";
   }
 
-  function loadOrders() {
-    const display = document.getElementById("orderDisplay");
+  function load() {
+    const box = document.getElementById("display");
     let orders = JSON.parse(localStorage.getItem("allOrders")) || [];
 
     if (orders.length === 0) {
-      display.innerHTML = `
-        <div class="empty-state">
-          <img src="https://cdn-icons-png.flaticon.com/512/11329/11329073.png" width="100" style="opacity: 0.3;">
-          <h2 style="margin-top: 20px;">No Orders Found</h2>
-          <p>Your sales pipeline is currently empty. Orders will appear here once checkout is complete.</p>
-        </div>`;
+      box.innerHTML = "<div class='empty'><h2>No Orders Found</h2><p>Your sales pipeline is currently empty.</p></div>";
       return;
     }
 
-    display.innerHTML = "";
-    orders.reverse().forEach(order => {
-      let itemsList = order.items.map(i => `${i.name} (x${i.qty})`).join(", ");
-      display.innerHTML += `
+    orders.reverse().forEach(o => {
+      let items = o.items.map(i => `${i.name} (x${i.qty})`).join(", ");
+      box.innerHTML += `
         <div class="order-card">
-          <div style="display:flex; justify-content:space-between;">
-            <strong>Order ID: ${order.id}</strong>
-            <span>${order.date}</span>
+          <div style="display:flex; justify-content:space-between; color:#888; font-size:0.85rem;">
+            <strong>Order ID: ${o.id}</strong>
+            <span>${o.date} | ${o.time}</span>
           </div>
-          <p>Items: <i>${itemsList}</i></p>
+          <div class="cust-info">
+            <p style="margin:0;">👤 <b>Customer:</b> ${o.customer}</p>
+            <p style="margin:5px 0 0 0;">📞 <b>Phone:</b> ${o.mobile}</p>
+          </div>
+          <div class="item-list">🛒 <b>Items:</b> ${items}</div>
           <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span>Payment: <b>${order.payment}</b></span>
-            <span style="color:#d9534f; font-weight:bold;">Total: ₹${order.total}</span>
+            <span>Payment: <b>${o.payment}</b></span>
+            <span class="total">Total: ₹${o.total}</span>
           </div>
         </div>`;
     });
   }
-
-  function clearData() {
-    if(confirm("Delete all sales history?")) {
-      localStorage.removeItem("allOrders");
-      loadOrders();
-    }
-  }
-
-  window.onload = loadOrders;
+  window.onload = load;
 </script>
 </body>
 </html>
