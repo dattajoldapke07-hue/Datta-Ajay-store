@@ -2,35 +2,77 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>❤️ Wishlist</title>
+<title>My Wishlist ❤️</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
 <header>
-  <h1>My Wishlist</h1>
-  <a href="index.html"><button>🏠 Back to Store</button></a>
+  <h1>My Wishlist ❤️</h1>
+  <div>
+    <a href="index.html"><button>Back to Store</button></a>
+    <a href="cart.html"><button>Go to Cart 🛒</button></a>
+  </div>
 </header>
 
-<section id="wishlistItems"></section>
+<div id="wishlistItems" style="display: flex; flex-wrap: wrap; justify-content: center; padding: 20px;"></div>
 
 <script>
 let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-const container = document.getElementById("wishlistItems");
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-if(wishlist.length === 0){
-    container.innerHTML = "<p>Your wishlist is empty 😢</p>";
-}else{
-    wishlist.forEach(item => {
-        const div = document.createElement("div");
-        div.classList.add("product");
-        div.innerHTML = `
-            <img src="${item.image}" alt="${item.name}">
-            <h3>${item.name}</h3>
-            <p>₹${item.price}</p>
-        `;
-        container.appendChild(div);
-    });
+// Show Wishlist Items
+function showWishlist(){
+  const container = document.getElementById("wishlistItems");
+  container.innerHTML = "";
+  
+  if(wishlist.length === 0){ 
+    container.innerHTML = "<h2>Your wishlist is empty!</h2>"; 
+    return; 
+  }
+
+  wishlist.forEach(item => {
+    container.innerHTML += `
+      <div class="product">
+        <img src="${item.image}" alt="${item.name}">
+        <h3>${item.name}</h3>
+        <p>₹${item.price}</p>
+        <button onclick="moveToCart(${item.id})" style="background: #28a745; color:white;">Add to Cart 🛒</button>
+        <button onclick="removeFromWishlist(${item.id})" style="background: #dc3545; color:white; margin-top:5px;">Remove ❌</button>
+      </div>`;
+  });
 }
+
+// 1. Function: Wishlist se Cart mein bhejne ke liye
+function moveToCart(id){
+  let item = wishlist.find(p => p.id === id);
+  
+  // Cart mein add karo
+  let exist = cart.find(c => c.id === id);
+  if(exist) {
+    exist.qty += 1;
+  } else {
+    item.qty = 1;
+    cart.push(item);
+  }
+  
+  localStorage.setItem("cart", JSON.stringify(cart));
+  
+  // Wishlist se hatao (Optional: Agar aap chahte hain ki cart mein jane ke baad wishlist mein rahe, toh niche wali line hata dein)
+  removeFromWishlist(id); 
+  
+  alert("Moved to Cart ✅");
+}
+
+// 2. Function: Wishlist se delete karne ke liye
+function removeFromWishlist(id){
+  wishlist = wishlist.filter(p => p.id !== id);
+  localStorage.setItem("wishlist", JSON.stringify(wishlist));
+  showWishlist(); // Screen refresh karne ke liye
+}
+
+window.onload = showWishlist;
 </script>
+
 </body>
 </html>
