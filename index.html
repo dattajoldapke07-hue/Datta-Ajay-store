@@ -3,38 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <title>🛍️ Datta & Ajay's Store</title>
-<style>
-body { font-family: Arial; text-align:center; margin-top:50px; background:linear-gradient(135deg,#ff9a9e,#fad0c4,#fbc2eb); color:#333;}
-#loginOverlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; justify-content:center; align-items:center; z-index:1000; }
-.login-box { text-align:center; background:rgba(255,255,255,0.1); padding:30px; border-radius:15px; backdrop-filter:blur(10px);}
-.login-box input { display:block; width:220px; margin:10px auto; padding:10px; border-radius:8px; border:none; }
-.login-box button { padding:10px 20px; border:none; border-radius:8px; cursor:pointer; background:#ff6f61; color:white; font-weight:bold; transition:0.3s; }
-.login-box button:hover { background:#ff3b2e; }
-.hidden { display:none; }
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div id="loginOverlay">
-  <div class="login-box">
-    <h2>Login to Enter Store</h2>
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
-    <button id="loginBtn">Login</button>
-    <p id="loginError" style="color:red; display:none;">Invalid username or password!</p>
+<!-- HEADER -->
+<header id="mainHeader">
+  <h1>🛒 Datta & Ajay Store</h1>
+  <div>
+    <button onclick="toggleDark()">🌙</button>
+    <a href="wishlist.html" class="header-btn">❤️ Wishlist</a>
+    <a href="cart.html" class="header-btn">🛒 Cart (<span id="cartCount">0</span>)</a>
   </div>
-</div>
+</header>
 
-<section id="products" class="hidden">
-  <h1>Welcome to Store!</h1>
-  <p>Products will be shown here after login.</p>
-</section>
+<!-- PRODUCTS -->
+<section id="products"></section>
 
+<script src="script.js"></script>
 <script>
-// Wait until DOM loaded
-document.addEventListener("DOMContentLoaded", function(){
-
-    const loginButton = document.getElementById("loginBtn");
+// Show store immediately (no login)
+document.addEventListener("DOMContentLoaded", function() {
+    showStore(); // tumhara existing showStore() function
+});
+</script>
+</body>
+</html>    const loginButton = document.getElementById("loginBtn");
 
     loginButton.addEventListener("click", function(){
         const username = document.getElementById("username").value.trim();
