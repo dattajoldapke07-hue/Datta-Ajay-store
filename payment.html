@@ -3,57 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Secure Payment</title>
-<link rel="stylesheet" href="style.css">
+<title>Payment</title>
 <style>
-  /* CSS Fix: Screenshort wala text hide karne ke liye aur design clean karne ke liye */
-  body { text-align: center; padding: 20px; font-family: Arial, sans-serif; }
-  
+  /* Sirf itna hi CSS rakhein, extra codes ko delete kar dein */
+  body { 
+    margin: 0; font-family: Arial; 
+    background: linear-gradient(135deg,#ff9a9e,#fad0c4,#fbc2eb); 
+    text-align: center; color: white; padding: 20px;
+  }
   .payment-container {
     background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(10px);
-    padding: 20px;
-    border-radius: 20px;
-    display: inline-block;
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 20px; border-radius: 20px;
+    display: inline-block; width: 90%; max-width: 400px;
   }
-
   .method-box {
-    background: white;
-    color: #333;
-    margin: 15px 0;
-    padding: 20px;
-    border-radius: 15px;
-    text-align: left;
+    background: white; color: #333; margin: 15px 0;
+    padding: 15px; border-radius: 15px; text-align: left;
   }
-
   input {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-sizing: border-box; /* Input box bahar nahi jayega */
+    width: 100%; padding: 10px; margin: 10px 0;
+    border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box;
   }
-
   .pay-btn {
-    width: 100%;
-    padding: 12px;
-    background: #ff6f61;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.3s;
+    width: 100%; padding: 12px; background: #ff6f61;
+    color: white; border: none; border-radius: 8px;
+    cursor: pointer; font-weight: bold;
   }
-
-  .pay-btn:hover { background: #e65b50; }
   .cod-btn { background: #28a745; }
-  
-  h2 { color: white; margin-bottom: 20px; }
 </style>
 </head>
 <body>
@@ -62,322 +39,37 @@
   <h2>Payment Method 💳</h2>
 
   <div class="method-box">
-    <strong>📱 UPI Payment</strong>
-    <input type="text" id="upiInput" placeholder="Enter UPI ID (name@upi)">
+    <strong>UPI Payment</strong>
+    <input type="text" id="upiId" placeholder="Enter UPI ID (e.g. name@upi)">
     <button class="pay-btn" onclick="checkUPI()">Pay Now</button>
   </div>
 
   <div class="method-box">
-    <strong>💳 Card Payment</strong>
+    <strong>Card Payment</strong>
     <input type="text" placeholder="Card Number">
-    <button class="pay-btn" onclick="processPay('Card')">Pay Now</button>
+    <button class="pay-btn" onclick="proceed('Card')">Pay Now</button>
   </div>
 
   <div class="method-box">
-    <button class="pay-btn cod-btn" onclick="processPay('COD')">Cash on Delivery</button>
+    <button class="pay-btn cod-btn" onclick="proceed('COD')">Cash on Delivery</button>
   </div>
 </div>
 
 <script>
   function checkUPI() {
-    const val = document.getElementById("upiInput").value;
+    let val = document.getElementById("upiId").value;
     if (!val.includes("@")) {
       alert("Invalid UPI ID");
       return;
     }
-    processPay('UPI');
+    proceed('UPI');
   }
 
-  function processPay(method) {
+  function proceed(method) {
     localStorage.setItem("paymentMethod", method);
     window.location.href = "success.html";
   }
 </script>
-
 </body>
 </html>
-// Sirf UPI ke liye validation
-function checkUPI() {
-  let val = document.getElementById("upiInput").value;
-  
-  if (!val.includes("@")) {
-    alert("Invalid UPI ID"); // Sirf wahi message jo aapne bola
-    return;
-  }
-  
-  pay('UPI'); // Agar sahi hai toh payment proceed karo
-}
 
-// Common Pay Function
-function pay(method) {
-  localStorage.setItem("paymentMethod", method);
-  window.location.href = "success.html";
-}
-</script>
-
-</body>
-</html>
-    width: 100%;
-    padding: 12px;
-    background: #ff6f61;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 1rem;
-    transition: 0.3s;
-  }
-  .pay-btn:hover { background: #e65b50; }
-  .cod-btn { background: #28a745; }
-  .cod-btn:hover { background: #218838; }
-  h2 { color: white; margin-bottom: 20px; }
-</style>
-</head>
-<body>
-
-<div class="payment-container">
-  <h2>Choose Payment Method 💳</h2>
-
-  <div class="method-box">
-    <strong>📱 UPI Payment</strong>
-    <input type="text" id="upiId" placeholder="Enter UPI ID (e.g. name@upi)">
-    <button class="pay-btn" onclick="processPayment('UPI')">Pay with UPI</button>
-  </div>
-
-  <div class="method-box">
-    <strong>💳 Card Payment</strong>
-    <input type="text" placeholder="Card Number (16 digits)">
-    <div style="display:flex; gap:10px;">
-      <input type="text" placeholder="MM/YY" style="width:50%">
-      <input type="password" placeholder="CVV" style="width:50%">
-    </div>
-    <button class="pay-btn" onclick="processPayment('Card')">Pay with Card</button>
-  </div>
-
-  <div class="method-box">
-    <strong>🚚 Cash on Delivery</strong>
-    <p style="font-size: 0.8rem; color: #666; margin: 5px 0;">Pay when your order arrives.</p>
-    <button class="pay-btn cod-btn" onclick="processPayment('COD')">Confirm COD Order</button>
-  </div>
-</div>
-
-<script>
-function processPayment(method) {
-  // 1. UPI Validation Logic
-  if (method === 'UPI') {
-    const upiValue = document.getElementById('upiId').value;
-    
-    if (upiValue === "") {
-      alert("⚠️ Please enter your UPI ID!");
-      return;
-    }
-    
-    if (!upiValue.includes('@')) {
-      alert("❌ Invalid UPI ID! Aapne '@' nahi dala hai. (Example: rakta@upi)");
-      return;
-    }
-  }
-
-  // 2. Agar sab sahi hai to success page par bhejo
-  localStorage.setItem("paymentMethod", method);
-  window.location.href = "success.html";
-}
-</script>
-
-</body>
-</html>
-</div>
-
-<script>
-function pay(method){
-  localStorage.setItem("paymentMethod", method);
-  window.location.href = "success.html";
-}
-</script>
-</body>
-</html>
-function payCard(){
-  let card = document.getElementById("cardNo").value.trim();
-  let exp = document.getElementById("cardExp").value.trim();
-  let cvv = document.getElementById("cardCVV").value.trim();
-  if(!card || !exp || !cvv){ alert("Fill card details"); return; }
-  completeOrder("Card");
-}
-
-function payCOD(){ completeOrder("Cash on Delivery"); }
-
-function completeOrder(method){
-  let total = cart.reduce((sum,i)=>sum + i.price*i.qty,0);
-  let orders = JSON.parse(localStorage.getItem("orders")) || [];
-  orders.push({ id: Date.now(), date: new Date().toLocaleString(), items: cart, total, method });
-  localStorage.setItem("orders", JSON.stringify(orders));
-  localStorage.removeItem("cart");
-
-  document.getElementById("upiBox").style.display = "none";
-  document.getElementById("cardBox").style.display = "none";
-  document.getElementById("successBox").style.display = "block";
-}
-
-function showBill(){
-  let orders = JSON.parse(localStorage.getItem("orders")) || [];
-  let last = orders[orders.length-1];
-  let content = `<p><strong>Order ID:</strong> ${last.id}</p>
-                 <p><strong>Date:</strong> ${last.date}</p>
-                 <p><strong>Payment Method:</strong> ${last.method}</p>
-                 <h3>Items:</h3><ul>`;
-  last.items.forEach(i => content += `<li>${i.name} x ${i.qty} = ₹${i.price*i.qty}</li>`);
-  content += `</ul><h3>Total: ₹${last.total}</h3>`;
-  document.getElementById("billContent").innerHTML = content;
-  document.getElementById("billBox").style.display = "block";
-  document.getElementById("successBox").style.display = "none";
-}
-</script>
-
-</body>
-</html>
-<script>
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-function showUPI(){ document.getElementById("upiBox").style.display="block"; document.getElementById("cardBox").style.display="none";}
-function showCard(){ document.getElementById("cardBox").style.display="block"; document.getElementById("upiBox").style.display="none";}
-
-function payUPI(){
-  let upi = document.getElementById("upiID").value.trim();
-  if(!upi || !upi.includes("@")) { alert("Invalid UPI ID"); return; }
-  completeOrder("UPI");
-}
-
-function payCard(){
-  let card = document.getElementById("cardNo").value.trim();
-  let exp = document.getElementById("cardExp").value.trim();
-  let cvv = document.getElementById("cardCVV").value.trim();
-  if(!card || !exp || !cvv){ alert("Fill card details"); return; }
-  completeOrder("Card");
-}
-
-function payCOD(){ completeOrder("Cash on Delivery"); }
-
-function completeOrder(method){
-  let total = cart.reduce((sum,i)=>sum+i.price*i.qty,0);
-  let orders = JSON.parse(localStorage.getItem("orders")) || [];
-  orders.push({ id: Date.now(), date: new Date().toLocaleString(), items: cart, total: total, method: method });
-  localStorage.setItem("orders", JSON.stringify(orders));
-  localStorage.removeItem("cart");
-  document.getElementById("upiBox").style.display="none";
-  document.getElementById("cardBox").style.display="none";
-  document.getElementById("successBox").style.display="block";
-}
-
-function showBill(){
-  let orders = JSON.parse(localStorage.getItem("orders")) || [];
-  let last = orders[orders.length-1];
-  let content = `<p><strong>Order ID:</strong> ${last.id}</p>
-                 <p><strong>Date:</strong> ${last.date}</p>
-                 <p><strong>Payment Method:</strong> ${last.method}</p>
-                 <h3>Items:</h3><ul>`;
-  last.items.forEach(i=>content+=`<li>${i.name} x ${i.qty} = ₹${i.price*i.qty}</li>`);
-  content += `</ul><h3>Total: ₹${last.total}</h3><p>Delivery in 3-5 days</p>`;
-  document.getElementById("billContent").innerHTML = content;
-  document.getElementById("billBox").style.display="block";
-  document.getElementById("successBox").style.display="none";
-}
-</script>
-</body>
-</html>#successBox h3 { color:green; }
-#billBox { display:none; text-align:left; background:white; padding:20px; margin:20px auto; width:350px; border-radius:10px; box-shadow:0 0 15px rgba(0,0,0,0.3);}
-</style>
-</head>
-<body>
-
-<h2>Select Payment Method</h2>
-
-<button onclick="showUPI()">💳 UPI</button>
-<button onclick="showCard()">💳 Card</button>
-<button onclick="payCOD()">📦 Cash on Delivery</button>
-
-<div id="upiBox">
-  <h3>Enter UPI ID</h3>
-  <input type="text" id="upiID" placeholder="example@upi">
-  <br>
-  <button onclick="payUPI()">Pay Now</button>
-</div>
-
-<div id="cardBox">
-  <h3>Enter Card Details</h3>
-  <input type="text" id="cardNo" placeholder="Card Number"><br>
-  <input type="text" id="cardExp" placeholder="MM/YY"><br>
-  <input type="text" id="cardCVV" placeholder="CVV"><br>
-  <button onclick="payCard()">Pay Now</button>
-</div>
-
-<div id="successBox">
-  <h3>✅ Payment Successful!</h3>
-  <p>Thank you for your order.</p>
-  <p>Delivery arrives in <strong>3-5 days</strong>.</p>
-  <button onclick="showBill()">View Bill</button>
-</div>
-
-<div id="billBox">
-  <h2>🧾 Order Bill</h2>
-  <div id="billContent"></div>
-</div>
-
-<script>
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-function showUPI(){ document.getElementById("upiBox").style.display="block"; document.getElementById("cardBox").style.display="none";}
-function showCard(){ document.getElementById("cardBox").style.display="block"; document.getElementById("upiBox").style.display="none";}
-
-function payUPI(){
-  let upi = document.getElementById("upiID").value.trim();
-  if(!upi){ alert("Please enter UPI ID"); return; }
-  completeOrder("UPI");
-}
-
-function payCard(){
-  let card = document.getElementById("cardNo").value.trim();
-  let exp = document.getElementById("cardExp").value.trim();
-  let cvv = document.getElementById("cardCVV").value.trim();
-  if(!card || !exp || !cvv){ alert("Please fill card details"); return; }
-  completeOrder("Card");
-}
-
-function payCOD(){ completeOrder("Cash on Delivery"); }
-
-function completeOrder(method){
-  let total = cart.reduce((sum,i)=>sum+i.price*i.qty,0);
-  let orders = JSON.parse(localStorage.getItem("orders")) || [];
-  orders.push({
-    id: Date.now(),
-    date: new Date().toLocaleString(),
-    items: cart,
-    total: total,
-    method: method
-  });
-  localStorage.setItem("orders",JSON.stringify(orders));
-  localStorage.removeItem("cart");
-
-  document.getElementById("upiBox").style.display="none";
-  document.getElementById("cardBox").style.display="none";
-  document.getElementById("successBox").style.display="block";
-}
-
-function showBill(){
-  let orders = JSON.parse(localStorage.getItem("orders")) || [];
-  let last = orders[orders.length-1];
-  let content = `<p><strong>Order ID:</strong> ${last.id}</p>
-                 <p><strong>Date:</strong> ${last.date}</p>
-                 <p><strong>Payment Method:</strong> ${last.method}</p>
-                 <h3>Items:</h3>
-                 <ul>`;
-  last.items.forEach(i=>content+=`<li>${i.name} x ${i.qty} = ₹${i.price*i.qty}</li>`);
-  content += `</ul><h3>Total: ₹${last.total}</h3>
-              <p>Delivery arrives in <strong>3-5 days</strong>.</p>`;
-  document.getElementById("billContent").innerHTML=content;
-  document.getElementById("billBox").style.display="block";
-  document.getElementById("successBox").style.display="none";
-}
-</script>
-</body>
-</html>
