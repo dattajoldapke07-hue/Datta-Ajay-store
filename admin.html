@@ -2,67 +2,69 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Admin Panel - Datta & Ajay Store</title>
+<title>Sales Dashboard - Professional</title>
 <style>
-  body { font-family: Arial; background: #f0f2f5; padding: 20px; }
-  .header { background: #333; color: white; padding: 20px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
-  .order-list { margin-top: 20px; }
-  .order-card { background: white; margin-bottom: 15px; padding: 20px; border-radius: 10px; border-left: 5px solid #28a745; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-  .item-line { font-size: 0.9rem; color: #555; border-bottom: 1px solid #eee; padding: 5px 0; }
-  .total-price { color: #d9534f; font-weight: bold; font-size: 1.2rem; }
-  .clear-btn { background: #dc3545; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }
+  body { font-family: Arial; background: #f4f7f6; padding: 20px; }
+  .header { background: #333; color: white; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
+  .order-card { background: white; margin-top: 15px; padding: 20px; border-radius: 10px; border-left: 5px solid #28a745; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+  .empty-state { text-align: center; margin-top: 80px; color: #777; }
+  .total-amt { color: #d9534f; font-weight: bold; font-size: 1.1rem; }
+  .btn-clear { background: #dc3545; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>📦 Sales Dashboard</h1>
+  <h1>📊 Store Sales Analytics</h1>
   <div>
-    <button class="clear-btn" onclick="clearHistory()">Clear All Data</button>
-    <a href="index.html" style="color:white; margin-left:10px;">Back to Store</a>
+    <button class="btn-clear" onclick="clearData()">Clear Records</button>
+    <a href="index.html" style="color:white; margin-left:15px; text-decoration:none;">🏠 Store Home</a>
   </div>
 </div>
 
-<div class="order-list" id="orderDisplay"></div>
+<div id="orderDisplay"></div>
 
 <script>
-  function displayOrders() {
+  function loadOrders() {
     const display = document.getElementById("orderDisplay");
     let orders = JSON.parse(localStorage.getItem("allOrders")) || [];
 
     if (orders.length === 0) {
-      display.innerHTML = "<h2 style='text-align:center; color:#888;'>Abhi tak koi order nahi aaya hai.</h2>";
+      display.innerHTML = `
+        <div class="empty-state">
+          <img src="https://cdn-icons-png.flaticon.com/512/11329/11329073.png" width="100" style="opacity: 0.3;">
+          <h2 style="margin-top: 20px;">No Orders Found</h2>
+          <p>Your sales pipeline is currently empty. New order data will appear here in real-time as customers complete their purchases.</p>
+        </div>`;
       return;
     }
 
     display.innerHTML = "";
-    // Naye orders upar dikhane ke liye reverse
     orders.reverse().forEach(order => {
-      let itemsHtml = order.items.map(i => `<div class='item-line'>${i.name} (x${i.qty}) - ₹${i.price * i.qty}</div>`).join("");
-      
+      let itemsList = order.items.map(i => `${i.name} (x${i.qty})`).join(", ");
       display.innerHTML += `
         <div class="order-card">
           <div style="display:flex; justify-content:space-between;">
             <strong>Order ID: ${order.id}</strong>
-            <small>${order.date}</small>
+            <span>${order.date}</span>
           </div>
-          <div style="margin: 10px 0;">${itemsHtml}</div>
+          <p style="margin: 10px 0;">Items: <i>${itemsList}</i></p>
           <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span>Payment: <b>${order.payment}</b></span>
-            <span class="total-price">Total: ₹${order.total}</span>
+            <span>Payment Method: <b>${order.payment}</b></span>
+            <span class="total-amt">Grand Total: ₹${order.total}</span>
           </div>
         </div>`;
     });
   }
 
-  function clearHistory() {
-    if (confirm("Kya aap saara sales data delete karna chahte hain?")) {
+  function clearData() {
+    if(confirm("Are you sure you want to delete all sales history?")) {
       localStorage.removeItem("allOrders");
-      displayOrders();
+      loadOrders();
     }
   }
 
-  window.onload = displayOrders;
+  window.onload = loadOrders;
 </script>
 </body>
 </html>
