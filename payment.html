@@ -2,38 +2,59 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Secure Payment</title>
+<title>Payment Page</title>
 <link rel="stylesheet" href="style.css">
 <style>
-  body { text-align: center; padding: 20px; }
-  .payment-container {
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    padding: 20px;
-    border-radius: 20px;
-    display: inline-block;
-    width: 90%;
-    max-width: 450px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  .payment-box {
+    background: white; color: #333; margin: 20px auto; padding: 20px;
+    width: 90%; max-width: 400px; border-radius: 15px; text-align: center;
   }
-  .method-box {
-    background: white;
-    color: #333;
-    margin: 15px 0;
-    padding: 15px;
-    border-radius: 12px;
-    text-align: left;
+  input { padding: 10px; margin: 10px 0; width: 80%; border-radius: 5px; border: 1px solid #ccc; }
+  .pay-btn { background: #ff6f61; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; width: 85%; }
+</style>
+</head>
+<body>
+
+<h1 style="text-align: center; color: white;">Choose Payment Method 💳</h1>
+
+<div class="payment-box">
+  <h3>UPI Payment</h3>
+  <input type="text" id="upiInput" placeholder="Enter UPI ID">
+  <button class="pay-btn" onclick="checkUPI()">Pay Now</button>
+</div>
+
+<div class="payment-box">
+  <h3>Card Payment</h3>
+  <input type="text" placeholder="Card Number">
+  <button class="pay-btn" onclick="pay('Card')">Pay Now</button>
+</div>
+
+<div class="payment-box">
+  <button class="pay-btn" style="background:#28a745;" onclick="pay('COD')">Cash on Delivery</button>
+</div>
+
+<script>
+// Sirf UPI ke liye validation
+function checkUPI() {
+  let val = document.getElementById("upiInput").value;
+  
+  if (!val.includes("@")) {
+    alert("Invalid UPI ID"); // Sirf wahi message jo aapne bola
+    return;
   }
-  input {
-    width: 95%;
-    padding: 10px;
-    margin: 8px 0;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    display: block;
-  }
-  .pay-btn {
+  
+  pay('UPI'); // Agar sahi hai toh payment proceed karo
+}
+
+// Common Pay Function
+function pay(method) {
+  localStorage.setItem("paymentMethod", method);
+  window.location.href = "success.html";
+}
+</script>
+
+</body>
+</html>
     width: 100%;
     padding: 12px;
     background: #ff6f61;
