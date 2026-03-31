@@ -28,12 +28,14 @@
   .sb-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
   .sb-body { flex: 1; overflow-y: auto; padding: 15px; }
 
-  /* ADMIN INPUTS */
-  .admin-input { width: 90%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ddd; }
+  /* PAYMENT CARDS */
+  .pay-card { display: flex; align-items: center; background: #f8f8f8; padding: 10px; border-radius: 10px; margin-bottom: 8px; border: 2px solid transparent; cursor: pointer; }
+  .pay-card input { margin-right: 10px; }
+  .pay-card.active { border-color: var(--primary); background: #fff5f4; }
 
-  /* INVOICE MODAL */
+  /* INVOICE */
   #receiptModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; padding: 10px; }
-  .invoice-box { background: #fff; width: 100%; max-width: 340px; padding: 20px; border-radius: 4px; font-family: 'Courier New', Courier, monospace; position: relative; color: #000; }
+  .invoice-box { background: #fff; width: 100%; max-width: 340px; padding: 20px; border-radius: 4px; font-family: 'Courier New', Courier, monospace; color: #000; }
   
   #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary); z-index: 10000; display: flex; justify-content: center; align-items: center; }
   .login-box { background: white; padding: 30px; border-radius: 25px; text-align: center; width: 85%; max-width: 300px; }
@@ -54,7 +56,6 @@
   <div class="nav-buttons">
     <button class="btn" style="background:#333; color:white;" onclick="openAdmin()">🔑 Admin</button>
     <button class="btn" onclick="toggleDark()">🌙 Mode</button>
-    <button class="btn" onclick="showWishlistPage()">❤️ Wishlist (<span id="wishCount">0</span>)</button>
     <button class="btn" onclick="openCart()" style="background:var(--primary); color:white;">🛒 Cart (<span id="cartCount">0</span>)</button>
   </div>
   <input type="text" id="searchBox" class="search-box" onkeyup="searchItems()" placeholder="Saree, Watch, Shoes...">
@@ -67,9 +68,16 @@
 <div id="cartSidebar" class="sidebar">
   <div class="sb-header"><h3>My Cart 🛒</h3><button onclick="closeCart()" style="border:none; background:none; font-size:2rem;">×</button></div>
   <div id="cartItemsList" class="sb-body"></div>
-  <div style="padding:15px; border-top:1px solid #eee;">
+  <div style="padding:15px; border-top:1px solid #eee; background:white;">
     <h3 id="totalBill" style="text-align:center; color:var(--primary); margin-bottom:10px;">Total: ₹0</h3>
-    <button class="add-btn" style="background:var(--success);" onclick="placeOrder()">PLACE ORDER 🚀</button>
+    <p style="font-size:0.8rem; font-weight:bold; margin-bottom:5px;">Payment Method:</p>
+    <label class="pay-card active" id="cardCod">
+      <input type="radio" name="payOption" value="COD" checked onclick="selectPay('cardCod')"> 💵 Cash on Delivery
+    </label>
+    <label class="pay-card" id="cardUpi">
+      <input type="radio" name="payOption" value="UPI" onclick="selectPay('cardUpi')"> 📱 UPI / Online
+    </label>
+    <button class="add-btn" style="background:var(--success); font-size:1.1rem;" onclick="placeOrder()">PLACE ORDER 🚀</button>
   </div>
 </div>
 
@@ -77,22 +85,22 @@
   <div class="sb-header"><h3>Admin Panel 🔑</h3><button onclick="closeAdmin()" style="border:none; background:none; font-size:2rem;">×</button></div>
   <div class="sb-body">
     <h4>Add New Product</h4>
-    <input type="text" id="adminPName" class="admin-input" placeholder="Product Name">
-    <input type="number" id="adminPPrice" class="admin-input" placeholder="Price (₹)">
-    <input type="text" id="adminPImg" class="admin-input" placeholder="Image URL (Link)">
-    <button class="add-btn" onclick="adminAddProduct()">Add to Store ✅</button>
+    <input type="text" id="adminPName" style="width:90%; padding:8px; margin-bottom:5px;" placeholder="Product Name">
+    <input type="number" id="adminPPrice" style="width:90%; padding:8px; margin-bottom:5px;" placeholder="Price (₹)">
+    <input type="text" id="adminPImg" style="width:90%; padding:8px; margin-bottom:5px;" placeholder="Image URL">
+    <button class="add-btn" onclick="adminAddProduct()">Add Product ✅</button>
     <hr>
-    <h4>Recent Orders</h4>
-    <div id="adminOrderList" style="font-size: 0.7rem;">No orders yet.</div>
-    <button class="add-btn" style="background:red;" onclick="clearStoreData()">Reset All Products ⚠️</button>
+    <h4>Orders</h4>
+    <div id="adminOrderList" style="font-size: 0.7rem;"></div>
   </div>
 </div>
 
 <div id="receiptModal">
   <div class="invoice-box">
-    <h3 style="text-align:center;">DATTA & AJAY STORE</h3>
-    <div id="invContent" style="font-size:0.8rem; margin:15px 0;"></div>
-    <button class="add-btn" onclick="location.reload()">CLOSE</button>
+    <h3 style="text-align:center; border-bottom:1px dashed #000; padding-bottom:10px;">INVOICE</h3>
+    <div id="invContent" style="font-size:0.85rem; line-height:1.6; margin:15px 0;"></div>
+    <p style="text-align:center; font-size:0.7rem; border-top:1px dashed #000; padding-top:10px;">Thank You! Delivery in 3-5 days.</p>
+    <button class="add-btn" onclick="location.reload()">DONE</button>
   </div>
 </div>
 
@@ -102,15 +110,17 @@ const TEMPLATE_ID = "template_x85ytrq";
 const PUBLIC_KEY = "mIOgOSr1AjeDPmz8L";
 emailjs.init(PUBLIC_KEY);
 
-// Default list of products
 const defaultProducts = [
   {id:101, name:"Premium T-Shirt", price:500, image:"https://www.freeiconspng.com/uploads/blank-t-shirt-png-16.jpg"},
   {id:102, name:"Sneaker Shoes", price:1500, image:"https://www.pngall.com/wp-content/uploads/5/Men-Shoes-PNG-Image-File.png"},
   {id:103, name:"Luxury Watch", price:2000, image:"https://i.postimg.cc/66k6BKX7/1805QM04-1.jpg"},
-  {id:104, name:"Silk Saree", price:1499, image:"https://i.postimg.cc/jqGQHDzF/IMG-20260325-WA0001.jpg"}
+  {id:104, name:"Silk Saree", price:1499, image:"https://i.postimg.cc/jqGQHDzF/IMG-20260325-WA0001.jpg"},
+  {id:105, name:"Formal White Shirt", price:299, image:"https://i.postimg.cc/L5bHPdY2/IMG-20260328-WA0044.jpg"},
+  {id:106, name:"Round Sunglasses", price:450, image:"https://i.postimg.cc/9FKSqXMf/IMG-20260228-WA0071.jpg"},
+  {id:107, name:"Smart Watch Pro", price:3500, image:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400"},
+  {id:108, name:"Gaming Mouse", price:1200, image:"https://images.unsplash.com/photo-1527814050087-379371549a28?w=400"}
 ];
 
-// Load from LocalStorage or use Defaults
 let products = JSON.parse(localStorage.getItem("storeProducts")) || defaultProducts;
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 let allOrders = JSON.parse(localStorage.getItem("allOrders")) || [];
@@ -139,41 +149,20 @@ function showStore(items = products){
     </div>`).join('');
 }
 
-// --- ADMIN FUNCTION: ADD PRODUCT ---
-function adminAddProduct() {
-  const name = document.getElementById("adminPName").value.trim();
-  const price = document.getElementById("adminPPrice").value.trim();
-  const img = document.getElementById("adminPImg").value.trim();
-
-  if(name && price) {
-    const newProduct = {
-      id: Date.now(), // Unique ID
-      name: name,
-      price: parseInt(price),
-      image: img || "https://via.placeholder.com/150"
-    };
-
-    products.push(newProduct); // Add to current list
-    localStorage.setItem("storeProducts", JSON.stringify(products)); // SAVE PERMANENTLY
-    
-    alert("Naya Product Add ho gaya! 🚀");
-    
-    // Clear inputs
-    document.getElementById("adminPName").value = "";
-    document.getElementById("adminPPrice").value = "";
-    document.getElementById("adminPImg").value = "";
-    
-    showStore(); // Refresh store
-  } else {
-    alert("Kripya Name aur Price zaroor bharein!");
-  }
+function selectPay(id) {
+  document.querySelectorAll('.pay-card').forEach(c => c.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
 }
 
-function clearStoreData() {
-    if(confirm("Saare naye products delete karke original list wapas layein?")) {
-        localStorage.removeItem("storeProducts");
-        location.reload();
-    }
+function adminAddProduct() {
+  const name = document.getElementById("adminPName").value;
+  const price = document.getElementById("adminPPrice").value;
+  const img = document.getElementById("adminPImg").value;
+  if(name && price) {
+    products.push({id: Date.now(), name, price: parseInt(price), image: img});
+    localStorage.setItem("storeProducts", JSON.stringify(products));
+    showStore(); alert("Added!");
+  }
 }
 
 function addToCart(id){
@@ -187,35 +176,47 @@ function updateUI() {
   let total = 0;
   document.getElementById("cartItemsList").innerHTML = cart.map((item, i) => {
     total += item.price;
-    return `<div style="display:flex;justify-content:space-between;margin-bottom:10px;"><span>${item.name}</span><span>₹${item.price}</span></div>`;
+    return `<div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span>${item.name}</span><span>₹${item.price}</span></div>`;
   }).join('');
   document.getElementById("totalBill").innerText = `Total: ₹${total}`;
 }
 
 function placeOrder() {
   if(cart.length === 0) return alert("Cart empty!");
-  const orderID = "INV-" + Math.floor(Math.random()*1000000);
+  const orderID = "INV-" + Math.floor(Math.random()*900000 + 100000);
+  const now = new Date();
+  const method = document.querySelector('input[name="payOption"]:checked').value;
   const total = cart.reduce((s,i)=>s+i.price,0);
   
-  allOrders.unshift({id: orderID, user: localStorage.getItem("customerName"), total: total});
+  allOrders.unshift({id: orderID, user: localStorage.getItem("customerName"), total: total, date: now.toLocaleString()});
   localStorage.setItem("allOrders", JSON.stringify(allOrders));
 
-  document.getElementById("invContent").innerHTML = `<b>ID:</b> ${orderID}<br><b>Total:</b> ₹${total}<br>Delivery in 3-5 days.`;
-  document.getElementById("receiptModal").style.display = "flex";
-  localStorage.removeItem("cart");
+  document.getElementById("invContent").innerHTML = `
+    <b>Order ID:</b> ${orderID}<br>
+    <b>Customer:</b> ${localStorage.getItem("customerName")}<br>
+    <b>Date:</b> ${now.toLocaleDateString()}<br>
+    <b>Time:</b> ${now.toLocaleTimeString()}<br>
+    <b>Payment:</b> ${method}<br><br>
+    <b>Total Bill: ₹${total}</b>
+  `;
+  
+  emailjs.send(SERVICE_ID, TEMPLATE_ID, { from_name: localStorage.getItem("customerName"), message: `Order ${orderID} placed via ${method}. Total: ₹${total}` })
+    .then(() => {
+      document.getElementById("receiptModal").style.display = "flex";
+      localStorage.removeItem("cart");
+    });
 }
 
 function openAdmin() {
-  if(prompt("Admin Password:") === "1234") {
+  if(prompt("Password:") === "1234") {
     document.getElementById("adminSidebar").classList.add("open");
-    document.getElementById("adminOrderList").innerHTML = allOrders.map(o => `<div>ID: ${o.id} - ₹${o.total}</div>`).join('');
+    document.getElementById("adminOrderList").innerHTML = allOrders.map(o => `<div>${o.id} - ₹${o.total}</div>`).join('');
   }
 }
 
 function closeAdmin() { document.getElementById("adminSidebar").classList.remove("open"); }
 function openCart() { document.getElementById("cartSidebar").classList.add("open"); }
 function closeCart() { document.getElementById("cartSidebar").classList.remove("open"); }
-function logout() { localStorage.clear(); location.reload(); }
 function toggleDark() { document.body.classList.toggle("dark"); }
 function searchItems() {
   const term = document.getElementById("searchBox").value.toLowerCase();
@@ -224,5 +225,5 @@ function searchItems() {
 window.onload = checkUser;
 </script>
 </body>
-                                                                                                 </html>
+        </html>
   
