@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>🛍️ Datta & Ajay's Store</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>🛍️ Datta & Ajay's Store</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -22,19 +22,13 @@
 
 <script src="script.js"></script>
 <script>
-// Show store immediately (no login)
+// Directly show store (login removed)
 document.addEventListener("DOMContentLoaded", function() {
-    showStore(); // तुम्हारा existing showStore() function
+    showStore(); // Existing function
 });
 </script>
 </body>
-</html>        if(username === "admin" && password === "1234"){
-            // Save login
-            localStorage.setItem("loggedInUser","admin");
-            // Hide login overlay
-            document.getElementById("loginOverlay").style.display = "none";
-            // Show store
-            document.getElementById("products").classList.remove("hidden");
+</html>            document.getElementById("products").classList.remove("hidden");
         } else {
             document.getElementById("loginError").style.display = "block";
         }
