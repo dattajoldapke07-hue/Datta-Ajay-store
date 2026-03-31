@@ -4,36 +4,46 @@
 <meta charset="UTF-8">
 <title>Payment</title>
 <link rel="stylesheet" href="style.css">
+<style>
+  .pay-option {
+    background: white; color: #333; margin: 10px auto; padding: 20px;
+    width: 80%; max-width: 400px; border-radius: 10px; text-align: center;
+  }
+  input { padding: 10px; margin: 10px 0; width: 90%; border-radius: 5px; border: 1px solid #ccc; }
+  .pay-btn { background: #ff6f61; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+</style>
 </head>
 <body>
-<h1>Choose Payment Method 💳</h1>
-<button onclick="pay('UPI')">UPI</button>
-<button onclick="pay('Card')">Card</button>
-<button onclick="pay('COD')">Cash on Delivery</button>
+<h1 style="text-align: center;">Choose Payment Method 💳</h1>
+
+<div class="pay-option">
+  <h3>UPI Payment</h3>
+  <input type="text" placeholder="Enter UPI ID (e.g. user@okaxis)">
+  <button class="pay-btn" onclick="pay('UPI')">Pay Now</button>
+</div>
+
+<div class="pay-option">
+  <h3>Card Payment</h3>
+  <input type="text" placeholder="Card Number">
+  <div style="display:flex; gap:10px;">
+    <input type="text" placeholder="MM/YY">
+    <input type="password" placeholder="CVV">
+  </div>
+  <button class="pay-btn" onclick="pay('Card')">Pay Now</button>
+</div>
+
+<div class="pay-option">
+  <button class="pay-btn" style="background:#28a745;" onclick="pay('COD')">Cash on Delivery</button>
+</div>
 
 <script>
 function pay(method){
-  alert(method+" Payment Selected");
   localStorage.setItem("paymentMethod", method);
   window.location.href = "success.html";
 }
 </script>
 </body>
-</html>  <div id="billContent"></div>
-</div>
-
-<script>
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-function showUPI(){ document.getElementById("upiBox").style.display="block"; document.getElementById("cardBox").style.display="none";}
-function showCard(){ document.getElementById("cardBox").style.display="block"; document.getElementById("upiBox").style.display="none";}
-
-function payUPI(){
-  let upi = document.getElementById("upiID").value.trim();
-  if(!upi || !upi.includes("@")){ alert("Invalid UPI"); return; }
-  completeOrder("UPI");
-}
-
+</html>
 function payCard(){
   let card = document.getElementById("cardNo").value.trim();
   let exp = document.getElementById("cardExp").value.trim();
