@@ -1,4 +1,3 @@
-// --- PRODUCTS ---
 const products = [
   {id:1,name:"T-Shirt",price:500,image:"https://www.freeiconspng.com/uploads/blank-t-shirt-png-16.jpg"},
   {id:2,name:"Shoes",price:1500,image:"https://www.pngall.com/wp-content/uploads/5/Men-Shoes-PNG-Image-File.png"},
@@ -13,7 +12,6 @@ const products = [
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
 
-// --- SHOW STORE ---
 function showStore(){
   document.getElementById("mainHeader").classList.remove("hidden");
   document.getElementById("products").classList.remove("hidden");
@@ -30,11 +28,71 @@ function showStore(){
   });
 }
 
-// --- CART ---
 function addToCart(id){
-  let item = products.find(p => p.id===id);
-  let exist = cart.find(c => c.id===id);
-  if(exist) exist.qty+=1;
+  let item = products.find(p=>p.id===id);
+  let exist = cart.find(c=>c.id===id);
+  if(exist) exist.qty+=1; else { item.qty=1; cart.push(item);}
+  localStorage.setItem("cart",JSON.stringify(cart));
+  updateCartCount();
+  alert("Added to Cart ✅");
+}
+
+function updateCartCount(){ document.getElementById("cartCount").innerText = cart.length; }
+
+function addToWishlist(id){
+  let item = products.find(p=>p.id===id);
+  if(!wishlist.find(w=>w.id===id)) wishlist.push(item);
+  localStorage.setItem("wishlist",JSON.stringify(wishlist));
+  alert("Added to Wishlist ❤️");
+}
+
+function toggleDark(){ document.body.classList.toggle("dark"); }
+
+// Payment functions (UPI validation included)
+function showUPI(){ document.getElementById("upiBox").style.display="block"; document.getElementById("cardBox").style.display="none"; }
+function showCard(){ document.getElementById("cardBox").style.display="block"; document.getElementById("upiBox").style.display="none"; }
+
+function payUPI(){
+  let upi = document.getElementById("upiID").value.trim();
+  if(!upi || !upi.includes("@")){ alert("Payment Failed: Invalid UPI ID"); return; }
+  completeOrder("UPI");
+}
+
+function payCard(){
+  let card = document.getElementById("cardNo").value.trim();
+  let exp = document.getElementById("cardExp").value.trim();
+  let cvv = document.getElementById("cardCVV").value.trim();
+  if(!card || !exp || !cvv){ alert("Please fill card details"); return; }
+  completeOrder("Card");
+}
+
+function payCOD(){ completeOrder("Cash on Delivery"); }
+
+function completeOrder(method){
+  let total = cart.reduce((sum,i)=>sum+i.price*i.qty,0);
+  let orders = JSON.parse(localStorage.getItem("orders")) || [];
+  orders.push({ id: Date.now(), date: new Date().toLocaleString(), items: cart, total: total, method: method });
+  localStorage.setItem("orders",JSON.stringify(orders));
+  localStorage.removeItem("cart");
+  document.getElementById("upiBox").style.display="none";
+  document.getElementById("cardBox").style.display="none";
+  document.getElementById("successBox").style.display="block";
+}
+
+function showBill(){
+  let orders = JSON.parse(localStorage.getItem("orders")) || [];
+  let last = orders[orders.length-1];
+  let content = `<p><strong>Order ID:</strong> ${last.id}</p>
+                 <p><strong>Date:</strong> ${last.date}</p>
+                 <p><strong>Payment Method:</strong> ${last.method}</p>
+                 <h3>Items:</h3><ul>`;
+  last.items.forEach(i=>content+=`<li>${i.name} x ${i.qty} = ₹${i.price*i.qty}</li>`);
+  content += `</ul><h3>Total: ₹${last.total}</h3>
+              <p>Delivery arrives in <strong>3-5 days</strong>.</p>`;
+  document.getElementById("billContent").innerHTML=content;
+  document.getElementById("billBox").style.display="block";
+  document.getElementById("successBox").style.display="none";
+               }  if(exist) exist.qty+=1;
   else { item.qty=1; cart.push(item); }
   localStorage.setItem("cart", JSON.stringify(cart));
   updateCartCount();
