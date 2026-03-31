@@ -1,5 +1,5 @@
 // --- LOGIN ---
-function login(){
+document.getElementById("loginBtn").addEventListener("click", function(){
     const u = document.getElementById("username").value.trim();
     const p = document.getElementById("password").value.trim();
     if(u==="admin" && p==="1234"){
@@ -9,7 +9,7 @@ function login(){
     } else {
         document.getElementById("loginError").style.display="block";
     }
-}
+});
 
 document.addEventListener("DOMContentLoaded", ()=>{
     if(localStorage.getItem("loggedInUser")) showStore();
@@ -35,6 +35,39 @@ function showStore(){
     document.getElementById("products").classList.remove("hidden");
     updateCartCount();
     const container=document.getElementById("products");
+    container.innerHTML="";
+    products.forEach(p=>{
+        const div=document.createElement("div");
+        div.classList.add("product");
+        div.innerHTML=`<img src="${p.image}"> <h3>${p.name}</h3> <p>₹${p.price}</p>
+                       <button onclick="addToCart(${p.id})">Add to Cart</button>
+                       <button onclick="addToWishlist(${p.id})">❤️ Wishlist</button>`;
+        container.appendChild(div);
+    });
+}
+
+// --- CART ---
+function addToCart(id){
+    let item=products.find(p=>p.id===id);
+    let exist=cart.find(c=>c.id===id);
+    if(exist) exist.qty+=1; 
+    else { item.qty=1; cart.push(item);}
+    localStorage.setItem("cart",JSON.stringify(cart));
+    updateCartCount();
+    alert("Added to Cart ✅");
+}
+function updateCartCount(){ document.getElementById("cartCount").innerText=cart.length; }
+
+// --- WISHLIST ---
+function addToWishlist(id){
+    let item=products.find(p=>p.id===id);
+    if(!wishlist.find(w=>w.id===id)) wishlist.push(item);
+    localStorage.setItem("wishlist",JSON.stringify(wishlist));
+    alert("Added to Wishlist ❤️");
+}
+
+// --- DARK MODE ---
+function toggleDark(){ document.body.classList.toggle("dark"); }    const container=document.getElementById("products");
     container.innerHTML="";
     products.forEach(p=>{
         const div=document.createElement("div");
