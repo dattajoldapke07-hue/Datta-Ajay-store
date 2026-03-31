@@ -22,8 +22,12 @@ if(wishlist.length === 0){
 }else{
     wishlist.forEach(item => {
         const div = document.createElement("div");
-        div.classList.add("product");
-        div.innerHTML = `<img src="${item.image}"><h3>${item.name}</h3><p>₹${item.price}</p>`;
+        div.classList.add("product"); // same styling as store
+        div.innerHTML = `
+            <img src="${item.image}" alt="${item.name}">
+            <h3>${item.name}</h3>
+            <p>₹${item.price}</p>
+        `;
         container.appendChild(div);
     });
 }
