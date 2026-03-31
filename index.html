@@ -8,68 +8,34 @@
 
 <style>
   :root { --primary: #ff6f61; --secondary: #feb47b; --dark: #1a1a1a; --light: #fdf2f2; --success: #28a745; }
-  
   body { margin: 0; font-family: 'Poppins', sans-serif; background: var(--light); transition: 0.5s; color: #333; overflow-x: hidden; }
   .dark { background: var(--dark); color: white !important; }
   .dark .product, .dark .cart-sidebar { background: #222; color: white; border: 1px solid #444; }
   .hidden { display: none !important; }
-  
-  header { 
-    background: linear-gradient(135deg, var(--primary), var(--secondary)); 
-    padding: 20px; color: white; text-align: center; position: sticky; top: 0; z-index: 1000; 
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-  }
+  header { background: linear-gradient(135deg, var(--primary), var(--secondary)); padding: 20px; color: white; text-align: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
   .nav-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 15px 0; }
-  .btn { 
-    background: white; color: var(--primary); border: none; padding: 10px 20px; 
-    border-radius: 25px; font-weight: bold; cursor: pointer; transition: 0.3s;
-  }
-  .btn:hover { transform: scale(1.05); }
-  
-  .search-box { 
-    width: 90%; max-width: 500px; padding: 12px 25px; border-radius: 30px; 
-    border: none; outline: none; font-size: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  }
-
-  #products { 
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
-    gap: 25px; padding: 30px; max-width: 1400px; margin: auto; 
-  }
-  .product { 
-    background: white; padding: 20px; border-radius: 25px; text-align: center; 
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05); transition: 0.4s; position: relative;
-  }
+  .btn { background: white; color: var(--primary); border: none; padding: 10px 20px; border-radius: 25px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+  .search-box { width: 90%; max-width: 500px; padding: 12px 25px; border-radius: 30px; border: none; outline: none; font-size: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+  #products { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; padding: 30px; max-width: 1400px; margin: auto; }
+  .product { background: white; padding: 20px; border-radius: 25px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.05); transition: 0.4s; position: relative; }
   .product img { width: 100%; height: 220px; object-fit: cover; border-radius: 20px; }
-  
-  .wishlist-heart { 
-    position: absolute; top: 30px; right: 30px; font-size: 1.5rem; 
-    cursor: pointer; color: #ccc; transition: 0.3s;
-  }
+  .wishlist-heart { position: absolute; top: 30px; right: 30px; font-size: 1.5rem; cursor: pointer; color: #ccc; transition: 0.3s; }
   .wishlist-heart.active { color: #ff4757; }
+  .add-btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 15px; }
 
-  .add-btn { 
-    background: var(--primary); color: white; border: none; padding: 12px; 
-    border-radius: 12px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 15px;
-  }
-
+  /* CART SIDEBAR FIX */
   .cart-sidebar { 
-    position: fixed; top: 0; right: -400px; width: 350px; height: 100%; 
+    position: fixed; top: 0; right: -400px; width: 330px; height: 100vh; 
     background: white; z-index: 2001; transition: 0.5s; box-shadow: -5px 0 25px rgba(0,0,0,0.2);
-    padding: 25px; display: flex; flex-direction: column;
+    padding: 20px; display: flex; flex-direction: column; box-sizing: border-box;
   }
   .cart-sidebar.open { right: 0; }
-  .cart-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 15px; }
-  
-  .cart-items-container { flex-grow: 1; overflow-y: auto; margin: 20px 0; }
-  .cart-item { display: flex; justify-content: space-between; margin-bottom: 15px; align-items: center; }
-  
-  .bill-footer { border-top: 2px solid #eee; padding-top: 15px; }
+  .cart-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+  .cart-items-container { flex: 1; overflow-y: auto; margin: 15px 0; }
+  .cart-item { display: flex; justify-content: space-between; margin-bottom: 15px; align-items: center; border-bottom: 1px solid #f0f0f0; padding-bottom: 5px; }
+  .bill-footer { border-top: 2px solid #eee; padding-top: 10px; }
 
-  #loginOverlay { 
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-    background: linear-gradient(135deg, var(--primary), var(--secondary)); 
-    z-index: 9999; display: flex; justify-content: center; align-items: center; 
-  }
+  #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--primary), var(--secondary)); z-index: 9999; display: flex; justify-content: center; align-items: center; }
   .login-box { background: white; padding: 40px; border-radius: 30px; text-align: center; width: 350px; }
 </style>
 </head>
@@ -92,7 +58,7 @@
     <button class="btn" style="background:#333; color:white;" onclick="logout()">👋 Logout</button>
   </div>
   <div id="searchArea">
-    <input type="text" id="searchBox" class="search-box" onkeyup="searchItems()" placeholder="Saree, Watch, Shoes khojein...">
+    <input type="text" id="searchBox" class="search-box" onkeyup="searchItems()" placeholder="Search Saree, Watch, Shoes...">
   </div>
 </header>
 
@@ -106,17 +72,17 @@
 
 <div id="cartSidebar" class="cart-sidebar">
   <div class="cart-header">
-    <h2 style="margin:0;">My Cart 🛒</h2>
-    <button onclick="closeCart()" style="background:none; border:none; font-size:2rem; cursor:pointer; color:var(--primary);">×</button>
+    <h3 style="margin:0;">My Cart 🛒</h3>
+    <button onclick="closeCart()" style="background:none; border:none; font-size:1.8rem; cursor:pointer; color:var(--primary);">×</button>
   </div>
   <div id="cartItemsList" class="cart-items-container"></div>
   <div class="bill-footer">
-    <h3 id="totalBill">Total: ₹0</h3>
-    <select id="payMethod" class="add-btn" style="background:#f0f0f0; color:#333; margin-bottom:15px;">
+    <h4 id="totalBill" style="margin: 5px 0;">Total: ₹0</h4>
+    <select id="payMethod" class="add-btn" style="background:#f0f0f0; color:#333; margin-bottom:10px; padding: 8px;">
       <option value="COD">Cash on Delivery (COD)</option>
       <option value="UPI">UPI / Online Payment</option>
     </select>
-    <button class="add-btn" style="background:var(--success);" onclick="placeOrder()">Place Order 🚀</button>
+    <button class="add-btn" style="background:var(--success); margin-bottom: 10px;" onclick="placeOrder()">Place Order 🚀</button>
   </div>
 </div>
 
@@ -161,8 +127,7 @@ function showStore(items = products){
   const container = document.getElementById("products");
   container.innerHTML = items.map(p => {
     const isWish = wishlist.some(w => w.id === p.id);
-    return `
-      <div class="product">
+    return `<div class="product">
         <span class="wishlist-heart ${isWish ? 'active' : ''}" onclick="toggleWish(${p.id})">❤️</span>
         <img src="${p.image}"> 
         <h3>${p.name}</h3> 
@@ -191,7 +156,6 @@ function toggleWish(id){
   else { wishlist.splice(index, 1); }
   localStorage.setItem("wishlist", JSON.stringify(wishlist));
   updateUI();
-  // Refresh view based on where user is
   const isWishPage = !document.getElementById("wishlistHeader").classList.contains("hidden");
   isWishPage ? showStore(wishlist) : showStore();
 }
@@ -244,4 +208,5 @@ function toggleDark() { document.body.classList.toggle("dark"); }
 window.onload = checkUser;
 </script>
 </body>
- </html>
+  </html>
+  
