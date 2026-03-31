@@ -4,61 +4,67 @@
 <meta charset="UTF-8">
 <title>Admin Dashboard</title>
 <style>
-  body { font-family: Arial; background: #f0f2f5; padding: 20px; }
-  .header { background: #333; color: white; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-  .order-card { background: white; margin-bottom: 15px; padding: 20px; border-radius: 12px; border-left: 6px solid #28a745; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-  .cust-info { background: #f9f9f9; padding: 10px; border-radius: 8px; margin: 10px 0; }
-  .item-list { font-size: 0.9rem; color: #666; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-  .total { color: #d9534f; font-weight: bold; font-size: 1.2rem; }
-  .empty { text-align: center; margin-top: 100px; color: #999; }
+  body { font-family: Arial; background: #f4f7f6; padding: 20px; }
+  .header { background: #333; color: white; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
+  .order-card { background: white; margin-top: 15px; padding: 20px; border-radius: 12px; border-left: 6px solid #ff6f61; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+  .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
+  .btn-status { border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem; color: white; margin-right: 5px; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>📊 Store Sales Dashboard</h1>
-  <div>
-    <button onclick="localStorage.removeItem('allOrders'); location.reload();" style="background:#dc3545; color:white; border:none; padding:10px; border-radius:6px; cursor:pointer;">Clear All History</button>
-    <a href="index.html" style="color:white; margin-left:15px; text-decoration:none;">Logout 🏠</a>
-  </div>
+  <h1>📊 Store Manager</h1>
+  <a href="index.html" style="color:white; text-decoration:none;">Logout 🏠</a>
 </div>
 
 <div id="display"></div>
 
 <script>
-  if (document.referrer === "" || !document.referrer.includes("index.html")) {
-    window.location.href = "index.html";
-  }
-
   function load() {
     const box = document.getElementById("display");
     let orders = JSON.parse(localStorage.getItem("allOrders")) || [];
-
+    
     if (orders.length === 0) {
-      box.innerHTML = "<div class='empty'><h2>No Orders Found</h2><p>Your sales pipeline is currently empty.</p></div>";
+      box.innerHTML = "<h2 style='text-align:center; margin-top:100px; color:#999;'>No Customer Records Found</h2>";
       return;
     }
 
+    box.innerHTML = "";
     orders.reverse().forEach(o => {
-      let items = o.items.map(i => `${i.name} (x${i.qty})`).join(", ");
       box.innerHTML += `
         <div class="order-card">
-          <div style="display:flex; justify-content:space-between; color:#888; font-size:0.85rem;">
-            <strong>Order ID: ${o.id}</strong>
+          <div style="display:flex; justify-content:space-between;">
+            <strong>ID: ${o.id}</strong>
             <span>${o.date} | ${o.time}</span>
           </div>
-          <div class="cust-info">
-            <p style="margin:0;">👤 <b>Customer:</b> ${o.customer}</p>
-            <p style="margin:5px 0 0 0;">📞 <b>Phone:</b> ${o.mobile}</p>
+          <div style="background:#f9f9f9; padding:10px; border-radius:8px; margin:10px 0;">
+            <p>👤 <b>Customer:</b> ${o.customer}</p>
+            <p>📞 <b>Phone:</b> ${o.mobile}</p>
+            <p>📦 <b>Status:</b> <span class="status-badge" style="background:#eee; color:#333;">${o.status || 'Pending'}</span></p>
           </div>
-          <div class="item-list">🛒 <b>Items:</b> ${items}</div>
           <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span>Payment: <b>${o.payment}</b></span>
-            <span class="total">Total: ₹${o.total}</span>
+            <span>Total: <b>₹${o.total}</b></span>
+            <div>
+              <button class="btn-status" style="background:orange;" onclick="updateStatus('${o.id}', 'Shipped')">Ship</button>
+              <button class="btn-status" style="background:green;" onclick="updateStatus('${o.id}', 'Delivered')">Deliver</button>
+            </div>
           </div>
         </div>`;
     });
   }
+
+  function updateStatus(id, stat) {
+    let orders = JSON.parse(localStorage.getItem("allOrders")) || [];
+    let order = orders.find(o => o.id === id);
+    if(order) {
+      order.status = stat;
+      localStorage.setItem("allOrders", JSON.stringify(orders));
+      load();
+      alert(`Order ${id} is now ${stat}`);
+    }
+  }
+
   window.onload = load;
 </script>
 </body>
