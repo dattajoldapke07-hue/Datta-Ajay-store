@@ -2,38 +2,100 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Payment Page</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Secure Payment</title>
 <link rel="stylesheet" href="style.css">
 <style>
-  .payment-box {
-    background: white; color: #333; margin: 20px auto; padding: 20px;
-    width: 90%; max-width: 400px; border-radius: 15px; text-align: center;
+  /* CSS Fix: Screenshort wala text hide karne ke liye aur design clean karne ke liye */
+  body { text-align: center; padding: 20px; font-family: Arial, sans-serif; }
+  
+  .payment-container {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 20px;
+    display: inline-block;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
   }
-  input { padding: 10px; margin: 10px 0; width: 80%; border-radius: 5px; border: 1px solid #ccc; }
-  .pay-btn { background: #ff6f61; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; width: 85%; }
+
+  .method-box {
+    background: white;
+    color: #333;
+    margin: 15px 0;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: left;
+  }
+
+  input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-sizing: border-box; /* Input box bahar nahi jayega */
+  }
+
+  .pay-btn {
+    width: 100%;
+    padding: 12px;
+    background: #ff6f61;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+
+  .pay-btn:hover { background: #e65b50; }
+  .cod-btn { background: #28a745; }
+  
+  h2 { color: white; margin-bottom: 20px; }
 </style>
 </head>
 <body>
 
-<h1 style="text-align: center; color: white;">Choose Payment Method 💳</h1>
+<div class="payment-container">
+  <h2>Payment Method 💳</h2>
 
-<div class="payment-box">
-  <h3>UPI Payment</h3>
-  <input type="text" id="upiInput" placeholder="Enter UPI ID">
-  <button class="pay-btn" onclick="checkUPI()">Pay Now</button>
-</div>
+  <div class="method-box">
+    <strong>📱 UPI Payment</strong>
+    <input type="text" id="upiInput" placeholder="Enter UPI ID (name@upi)">
+    <button class="pay-btn" onclick="checkUPI()">Pay Now</button>
+  </div>
 
-<div class="payment-box">
-  <h3>Card Payment</h3>
-  <input type="text" placeholder="Card Number">
-  <button class="pay-btn" onclick="pay('Card')">Pay Now</button>
-</div>
+  <div class="method-box">
+    <strong>💳 Card Payment</strong>
+    <input type="text" placeholder="Card Number">
+    <button class="pay-btn" onclick="processPay('Card')">Pay Now</button>
+  </div>
 
-<div class="payment-box">
-  <button class="pay-btn" style="background:#28a745;" onclick="pay('COD')">Cash on Delivery</button>
+  <div class="method-box">
+    <button class="pay-btn cod-btn" onclick="processPay('COD')">Cash on Delivery</button>
+  </div>
 </div>
 
 <script>
+  function checkUPI() {
+    const val = document.getElementById("upiInput").value;
+    if (!val.includes("@")) {
+      alert("Invalid UPI ID");
+      return;
+    }
+    processPay('UPI');
+  }
+
+  function processPay(method) {
+    localStorage.setItem("paymentMethod", method);
+    window.location.href = "success.html";
+  }
+</script>
+
+</body>
+</html>
 // Sirf UPI ke liye validation
 function checkUPI() {
   let val = document.getElementById("upiInput").value;
