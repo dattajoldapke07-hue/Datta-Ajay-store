@@ -2,54 +2,52 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Order Success</title>
-<link rel="stylesheet" href="style.css">
+<title>Order Confirmed</title>
 <style>
-  body { text-align: center; padding-top: 50px; font-family: Arial; background: #f4f7f6; }
-  .success-card { background: white; padding: 40px; border-radius: 20px; display: inline-block; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-  .btn { padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin: 10px; text-decoration: none; display: inline-block; }
-  .view-btn { background: #007bff; color: white; }
-  .home-btn { background: #28a745; color: white; }
+  body { text-align: center; padding-top: 80px; font-family: Arial; background: #f4f7f6; }
+  .card { background: white; padding: 40px; border-radius: 20px; display: inline-block; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+  .btn { padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; margin: 10px; color: white; }
 </style>
 </head>
 <body>
-
-  <div class="success-card">
-    <h1 style="color: #28a745;">✅ Order Placed Successfully!</h1>
-    <p>Thank you for shopping with us. Your order has been recorded.</p>
-    
-    <div style="margin-top: 20px;">
-      <a href="my-orders.html" class="btn view-btn">📄 View My Orders</a>
-      <a href="index.html" class="btn home-btn">🏠 Back to Store</a>
-    </div>
+  <div class="card">
+    <h1 style="color: #28a745;">✅ Order Placed!</h1>
+    <p>Your order has been recorded successfully.</p>
+    <a href="my-orders.html" class="btn" style="background:#007bff;">View My Orders</a>
+    <a href="index.html" class="btn" style="background:#333;">Back to Store</a>
   </div>
 
 <script>
   let method = localStorage.getItem("paymentMethod");
+  let cust = JSON.parse(localStorage.getItem("tempCust")) || { name: "Guest", phone: "N/A" };
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
   let total = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
 
   if (cart.length > 0) {
     let orderData = {
       id: "#ORD" + Math.floor(Math.random() * 10000),
-      date: new Date().toLocaleString(),
+      customer: cust.name,
+      mobile: cust.phone,
+      date: new Date().toLocaleDateString(),
+      time: new Date().toLocaleTimeString(),
       items: cart,
       total: total,
       payment: method
     };
 
-    // 1. Admin ke liye save (allOrders)
+    // Save for Admin
     let allOrders = JSON.parse(localStorage.getItem("allOrders")) || [];
     allOrders.push(orderData);
     localStorage.setItem("allOrders", JSON.stringify(allOrders));
 
-    // 2. Customer ke liye save (myOrders)
+    // Save for Customer
     let myOrders = JSON.parse(localStorage.getItem("myOrders")) || [];
     myOrders.push(orderData);
     localStorage.setItem("myOrders", JSON.stringify(myOrders));
 
-    // Order save hone ke baad cart saaf karein
+    // Clear session
     localStorage.removeItem("cart");
+    localStorage.removeItem("tempCust");
   }
 </script>
 </body>
