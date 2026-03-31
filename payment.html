@@ -6,35 +6,20 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<h1>Choose Payment Method 💳</h1>
+<button onclick="pay('UPI')">UPI</button>
+<button onclick="pay('Card')">Card</button>
+<button onclick="pay('COD')">Cash on Delivery</button>
 
-<h2>Select Payment Method</h2>
-<button onclick="showUPI()">💳 UPI</button>
-<button onclick="showCard()">💳 Card</button>
-<button onclick="payCOD()">📦 Cash on Delivery</button>
-
-<div id="upiBox">
-  <h3>Enter UPI ID</h3>
-  <input type="text" id="upiID" placeholder="example@upi"><br>
-  <button onclick="payUPI()">Pay Now</button>
-</div>
-
-<div id="cardBox">
-  <h3>Enter Card Details</h3>
-  <input type="text" id="cardNo" placeholder="Card Number"><br>
-  <input type="text" id="cardExp" placeholder="MM/YY"><br>
-  <input type="text" id="cardCVV" placeholder="CVV"><br>
-  <button onclick="payCard()">Pay Now</button>
-</div>
-
-<div id="successBox">
-  <h3>✅ Payment Successful!</h3>
-  <p>Thank you for your order.</p>
-  <button onclick="showBill()">View Bill</button>
-</div>
-
-<div id="billBox">
-  <h2>🧾 Order Bill</h2>
-  <div id="billContent"></div>
+<script>
+function pay(method){
+  alert(method+" Payment Selected");
+  localStorage.setItem("paymentMethod", method);
+  window.location.href = "success.html";
+}
+</script>
+</body>
+</html>  <div id="billContent"></div>
 </div>
 
 <script>
