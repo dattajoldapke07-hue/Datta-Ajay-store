@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Payment</title>
+<style>
+body {
+  font-family: Arial;
+  text-align: center;
+  margin-top: 50px;
+  background: linear-gradient(135deg,#ff9a9e,#fad0c4,#fbc2eb);
+  color:#333;
+}
+h2 { color:#ff6f61; }
+button {
+  padding: 12px 25px;
+  margin: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background:#ff6f61;
+  color:white;
+  transition:0.3s;
+}
+button:hover { background:#ff3b2e; transform:scale(1.05);}
+#upiBox, #cardBox, #successBox {
+  display:none;
+  margin: 20px auto;
+  padding: 20px;
+  width:300px;
+  background:white;
+  border-radius:10px;
+  box-shadow:0 0 10px rgba(0,0,0,0.2);
+}
+input { padding:10px; width:80%; margin:10px 0; border-radius:5px; border:1px solid #ccc; }
+
+/* Success popup */
+#successBox h3 { color:green; }
+#billBox { display:none; text-align:left; background:white; padding:20px; margin:20px auto; width:350px; border-radius:10px; box-shadow:0 0 15px rgba(0,0,0,0.3);}
+</style>
+</head>
+<body>
+
+<h2>Select Payment Method</h2>
+
+<button onclick="showUPI()">💳 UPI</button>
+<button onclick="showCard()">💳 Card</button>
+<button onclick="payCOD()">📦 Cash on Delivery</button>
+
+<!-- UPI -->
+<div id="upiBox">
+  <h3>Enter UPI ID</h3>
+  <input type="text" id="upiID" placeholder="example@upi">
+  <br>
+  <button onclick="payUPI()">Pay Now</button>
+</div>
+
+<!-- CARD -->
+<div id="cardBox">
+  <h3>Enter Card Details</h3>
+  <input type="text" id="cardNo" placeholder="Card Number"><br>
+  <input type="text" id="cardExp" placeholder="MM/YY"><br>
+  <input type="text" id="cardCVV" placeholder="CVV"><br>
+  <button onclick="payCard()">Pay Now</button>
+</div>
+
+<!-- SUCCESS -->
+<div id="successBox">
+  <h3>✅ Payment Successful!</h3>
+  <p>Thank you for your order.</p>
+  <p>Delivery arrives in <strong>3-5 days</strong>.</p>
+  <button onclick="showBill()">View Bill</button>
+</div>
+
+<!-- BILL -->
+<div id="billBox">
+  <h2>🧾 Order Bill</h2>
+  <div id="billContent"></div>
+</div>
+
+<script>
+// CART & ORDER
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+function showUPI(){ document.getElementById("upiBox").style.display="block"; document.getElementById("cardBox").style.display="none";}
+function showCard(){ document.getElementById("cardBox").style.display="block"; document.getElementById("upiBox").style.display="none";}
+
+// PAYMENT FUNCTIONS
+function payUPI(){
+  let upi = document.getElementById("upiID").value.trim();
+  if(!upi){ alert("Please enter UPI ID"); return; }
+  completeOrder("UPI");
+}
+
+function payCard(){
+  let card = document.getElementById("cardNo").value.trim();
+  let exp = document.getElementById("cardExp").value.trim();
+  let cvv = document.getElementById("cardCVV").value.trim();
+  if(!card || !exp || !cvv){ alert("Please fill card details"); return; }
+  completeOrder("Card");
+}
+
+function payCOD(){
+  completeOrder("Cash on Delivery");
+}
+
+// COMPLETE ORDER
+function completeOrder(method){
+  // Save order
+  let total = cart.reduce((sum,i)=>sum+i.price*i.qty,0);
+  let orders = JSON.parse(localStorage.getItem("orders")) || [];
+  orders.push({
+    id: Date.now(),
+    date: new Date().toLocaleString(),
+    items: cart,
+    total: total,
+    method: method
+  });
+  localStorage.setItem("orders",JSON.stringify(orders));
+  localStorage.removeItem("cart");
+
+  // SHOW SUCCESS
+  document.getElementById("upiBox").style.display="none";
+  document.getElementById("cardBox").style.display="none";
+  document.getElementById("successBox").style.display="block";
+}
+
+// SHOW BILL
+function showBill(){
+  let orders = JSON.parse(localStorage.getItem("orders")) || [];
+  let last = orders[orders.length-1];
+  let content = `<p><strong>Order ID:</strong> ${last.id}</p>
+                 <p><strong>Date:</strong> ${last.date}</p>
+                 <p><strong>Payment Method:</strong> ${last.method}</p>
+                 <h3>Items:</h3>
+                 <ul>`;
+  last.items.forEach(i=>content+=`<li>${i.name} x ${i.qty} = ₹${i.price*i.qty}</li>`);
+  content += `</ul><h3>Total: ₹${last.total}</h3>
+              <p>Delivery arrives in <strong>3-5 days</strong>.</p>`;
+  document.getElementById("billContent").innerHTML=content;
+  document.getElementById("billBox").style.display="block";
+  document.getElementById("successBox").style.display="none";
+}
+</script>
+</body>
+</html>
