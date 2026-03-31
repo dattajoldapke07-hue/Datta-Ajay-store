@@ -1,11 +1,14 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🛍️ Datta & Ajay's Mega Store</title>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
 <style>
-  body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #fdf2f2; transition: 0.5s; color: #333; }
+  /* Basic Styling */
+  body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background: #fdf2f2; transition: 0.5s; color: #333; }
   .dark { background: #1a1a1a; color: white !important; }
   .dark .product { background: #333; color: white; border: 1px solid #444; }
   .hidden { display: none !important; }
@@ -14,23 +17,59 @@
     background: #ff6f61; padding: 15px; color: white; text-align: center; 
     position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
   }
+
   .nav-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 10px 0; }
-  .btn { background: white; color: #ff6f61; border: none; padding: 8px 18px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.85rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+  .btn { 
+    background: white; color: #ff6f61; border: none; padding: 8px 18px; border-radius: 20px; 
+    font-weight: bold; cursor: pointer; font-size: 0.85rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+  }
   .admin-btn { background: #333 !important; color: white !important; }
 
   .search-container { margin: 10px auto; width: 90%; max-width: 500px; }
-  .search-box { width: 100%; padding: 12px 25px; border-radius: 30px; border: none; outline: none; font-size: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  .search-box { 
+    width: 100%; padding: 12px 25px; border-radius: 30px; border: none; 
+    outline: none; font-size: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+  }
 
-  #products { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; padding: 20px; max-width: 1300px; margin: auto; }
-  .product { background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.05); transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; }
+  /* Product Grid */
+  #products { 
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+    gap: 20px; padding: 20px; max-width: 1300px; margin: auto; 
+  }
+  .product { 
+    background: white; padding: 15px; border-radius: 20px; text-align: center; 
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05); transition: 0.3s; 
+    display: flex; flex-direction: column; justify-content: space-between; 
+  }
+  .product:hover { transform: translateY(-5px); }
   .product img { width: 100%; height: 200px; object-fit: cover; border-radius: 15px; margin-bottom: 10px; }
   
-  .add-btn { background: #ff6f61; color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; font-size: 1rem; }
+  .add-btn { 
+    background: #ff6f61; color: white; border: none; padding: 12px; 
+    border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; 
+    font-size: 1rem; margin-top: 10px; 
+  }
+  
+  /* Floating Order Button */
+  .checkout-btn { 
+    background: #28a745; color: white; border: none; padding: 15px 30px; 
+    border-radius: 30px; position: fixed; bottom: 20px; right: 20px; 
+    font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1001; 
+  }
 
-  /* Welcome Login Overlay */
-  #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ff6f61; z-index: 9999; display: flex; justify-content: center; align-items: center; }
-  .login-box { background: white; padding: 40px; border-radius: 30px; text-align: center; width: 350px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
-  #userNameInput { width: 100%; padding: 15px; margin: 20px 0; border-radius: 12px; border: 2px solid #eee; outline: none; font-size: 1rem; text-align: center; }
+  /* Login Overlay */
+  #loginOverlay { 
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+    background: #ff6f61; z-index: 9999; display: flex; justify-content: center; align-items: center; 
+  }
+  .login-box { 
+    background: white; padding: 40px; border-radius: 30px; text-align: center; 
+    width: 350px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); 
+  }
+  #userNameInput { 
+    width: 100%; padding: 15px; margin: 20px 0; border-radius: 12px; 
+    border: 2px solid #eee; outline: none; font-size: 1rem; text-align: center; 
+  }
 </style>
 </head>
 <body>
@@ -46,26 +85,33 @@
 
 <header id="mainHeader" class="hidden">
   <h1 id="welcomeGreeting">🛒 Datta & Ajay Store</h1>
-  
   <div class="nav-buttons">
-    <button class="btn admin-btn" onclick="alert('Admin Mode: Coming Soon!')">🔑 Admin</button>
+    <button class="btn admin-btn" onclick="alert('Admin Panel: Coming Soon!')">🔑 Admin</button>
     <button class="btn" onclick="toggleDark()">🌙 Dark Mode</button>
     <button class="btn" onclick="logout()">👋 Logout</button>
     <button class="btn">🛒 Cart (<span id="cartCount">0</span>)</button>
   </div>
-
   <div class="search-container">
-    <input type="text" id="searchBox" class="search-box" onkeyup="searchItems()" placeholder="Saree, Shoes, Watch... Kuch bhi search karein!">
+    <input type="text" id="searchBox" class="search-box" onkeyup="searchItems()" placeholder="Saree, Watch, Shoes... Search karein!">
   </div>
 </header>
 
 <main id="mainContent" class="hidden">
   <div id="products"></div>
+  <button class="checkout-btn" onclick="placeOrder()">Place Order 🚀</button>
 </main>
 
 <script>
+// --- AUTOMATIC BACKEND CONFIGURATION ---
+const SERVICE_ID = "service_lduofei"; 
+const TEMPLATE_ID = "template_x85ytrq"; 
+const PUBLIC_KEY = "mIOgOSr1AjeDPmz8L";
+
+// Initialize EmailJS with your Public Key
+emailjs.init(PUBLIC_KEY);
+
+// --- PRODUCT DATABASE ---
 const products = [
-  // Aapke Original Products
   {id:1, name:"T-Shirt", price:500, image:"https://www.freeiconspng.com/uploads/blank-t-shirt-png-16.jpg"},
   {id:2, name:"Shoes", price:1500, image:"https://www.pngall.com/wp-content/uploads/5/Men-Shoes-PNG-Image-File.png"},
   {id:3, name:"Watch", price:2000, image:"https://i.postimg.cc/66k6BKX7/1805QM04-1.jpg"},
@@ -74,24 +120,19 @@ const products = [
   {id:6, name:"Round Sunglass", price:450, image:"https://i.postimg.cc/9FKSqXMf/IMG-20260228-WA0071.jpg"},
   {id:7, name:"White Shirt", price:299, image:"https://i.postimg.cc/L5bHPdY2/IMG-20260328-WA0044.jpg"},
   {id:8, name:"Silk Saree", price:1499, image:"https://i.postimg.cc/jqGQHDzF/IMG-20260325-WA0001.jpg"},
-  
-  // Mere Extra Products
   {id:9, name:"Gaming Mouse", price:1200, image:"https://images.unsplash.com/photo-1527814050087-379371549a28?w=400"},
   {id:10, name:"Smart Watch Pro", price:3500, image:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400"},
-  {id:11, name:"Leather Wallet", price:999, image:"https://images.unsplash.com/photo-1627123424574-724758594e93?w=400"},
-  {id:12, name:"Bluetooth Speaker", price:2200, image:"https://images.unsplash.com/photo-1608156639585-b3a032ef9689?w=400"},
-  {id:13, name:"Wireless Buds", price:4500, image:"https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400"},
-  {id:14, name:"Denim Jeans", price:1800, image:"https://images.unsplash.com/photo-1542272604-787c3835535d?w=400"}
+  {id:11, name:"Bluetooth Speaker", price:2200, image:"https://images.unsplash.com/photo-1608156639585-b3a032ef9689?w=400"}
 ];
 
-let cart = [];
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-// --- LOGIN LOGIC ---
+// --- USER LOGIN LOGIC ---
 function saveUser() {
   const name = document.getElementById("userNameInput").value.trim();
-  if(name !== "") {
-    localStorage.setItem("customerName", name);
-    checkUser();
+  if(name) { 
+    localStorage.setItem("customerName", name); 
+    checkUser(); 
   } else {
     alert("Kripya apna naam likhein! 😊");
   }
@@ -108,21 +149,18 @@ function checkUser() {
   }
 }
 
-// --- STORE LOGIC ---
+// --- STORE DISPLAY & SEARCH ---
 function showStore(items = products){
   const container = document.getElementById("products");
-  container.innerHTML = "";
-  items.forEach(p => {
-    const div = document.createElement("div");
-    div.classList.add("product");
-    div.innerHTML = `
+  container.innerHTML = items.map(p => `
+    <div class="product">
       <img src="${p.image}"> 
       <h3>${p.name}</h3> 
       <p style="font-weight:bold; color:#ff6f61;">₹${p.price}</p> 
       <button class="add-btn" onclick="addToCart(${p.id})">Add to Cart</button>
-    `;
-    container.appendChild(div);
-  });
+    </div>
+  `).join('');
+  document.getElementById("cartCount").innerText = cart.length;
 }
 
 function searchItems() {
@@ -133,21 +171,49 @@ function searchItems() {
 
 function addToCart(id){
   let item = products.find(p => p.id === id);
-  cart.push(item);
+  cart.push({...item});
+  localStorage.setItem("cart", JSON.stringify(cart));
   document.getElementById("cartCount").innerText = cart.length;
-  alert(item.name + " cart mein gaya! ✅");
+  alert(item.name + " cart mein add ho gaya! ✅");
 }
 
+// --- ORDER SUBMISSION (AUTOMATIC EMAIL) ---
+function placeOrder() {
+  const customerName = localStorage.getItem("customerName") || "Customer";
+  if(cart.length === 0) return alert("Bhai, pehle cart mein kuch toh daalo! 🛒");
+
+  // Formatting items for the email template
+  let itemsList = "Items List:\n";
+  let total = 0;
+  cart.forEach((item, i) => {
+    itemsList += `${i+1}. ${item.name} - ₹${item.price}\n`;
+    total += item.price;
+  });
+  itemsList += `\n💰 Total Bill: ₹${total}`;
+
+  // Data to send to EmailJS
+  const templateParams = {
+    from_name: customerName,
+    message: itemsList 
+  };
+
+  // Sending the Order to your Email
+  emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams)
+    .then(() => {
+      alert("🎉 Order Successful! Datta aur Ajay ko Email bhej diya gaya hai.");
+      localStorage.removeItem("cart"); // Clear cart after success
+      location.reload(); 
+    }, (err) => {
+      alert("Error: Order nahi bhej paye. Internet check karein!");
+      console.log("EmailJS Error:", err);
+    });
+}
+
+function logout() { localStorage.removeItem("customerName"); location.reload(); }
 function toggleDark(){ document.body.classList.toggle("dark"); }
 
-function logout() {
-  localStorage.removeItem("customerName");
-  location.reload(); // Page reload hote hi Name option wapas aa jayega
-}
-
-// Check on load
+// Initial check on load
 window.onload = checkUser;
 </script>
 </body>
-  </html>
-  
+</html>
