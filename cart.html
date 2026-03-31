@@ -2,39 +2,44 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>🛒 Cart</title>
+<title>Cart</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<h2 style="text-align:center; margin-top:20px;">🛒 Your Cart</h2>
-<div id="cartItems" style="text-align:center;"></div>
-<div style="text-align:center; margin-top:20px;">
-  <button onclick="checkout()" style="padding:10px 20px;">Proceed to Payment</button>
-</div>
+<h1>Your Cart 🛒</h1>
+<div id="cartItems"></div>
+<p id="totalPrice"></p>
+<button onclick="goToPayment()">Proceed to Payment 💳</button>
 
 <script>
+// Load cart
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
+// Show Cart Items
 function showCart(){
   const container = document.getElementById("cartItems");
   container.innerHTML = "";
-  if(cart.length === 0){
-    container.innerHTML = "<p>Cart is empty</p>";
-    return;
-  }
-  cart.forEach(i => {
-    container.innerHTML += `<p>${i.name} x ${i.qty} = ₹${i.price * i.qty}</p>`;
+  if(cart.length===0){ container.innerHTML="<p>Cart is empty!</p>"; return; }
+  cart.forEach(item=>{
+    container.innerHTML += `<div>
+      <h3>${item.name}</h3>
+      <p>₹${item.price} x ${item.qty}</p>
+    </div>`;
   });
+  let total = cart.reduce((sum,i)=>sum+i.price*i.qty,0);
+  document.getElementById("totalPrice").innerText = "Total: ₹"+total;
 }
-showCart();
 
-function checkout(){
-  if(cart.length === 0){ alert("Cart empty!"); return; }
+// Go to Payment Page
+function goToPayment(){
+  if(cart.length===0){ alert("Cart is empty!"); return; }
   window.location.href = "payment.html";
 }
-</script>
 
+window.onload = showCart;
+</script>
+</body>
+</html>
 </body>
 </html></body>
 </html>
