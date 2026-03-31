@@ -10,54 +10,59 @@
   .dark .product { background: #333; color: white; border: 1px solid #444; }
   .hidden { display: none !important; }
   
+  /* Header & Navigation */
   header { 
     background: #ff6f61; padding: 15px; color: white; text-align: center; 
     position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
   }
-
   .nav-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 10px 0; }
-  .btn { background: white; color: #ff6f61; border: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; cursor: pointer; text-decoration: none; font-size: 0.85rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-  .admin-btn { background: #333; color: white; }
+  .btn { background: white; color: #ff6f61; border: none; padding: 8px 18px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.85rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: 0.2s; }
+  .btn:hover { transform: scale(1.05); background: #fff1f0; }
+  .admin-btn { background: #333 !important; color: white !important; }
 
-  .search-container { margin: 15px auto; width: 90%; max-width: 500px; }
-  .search-box { width: 100%; padding: 12px 20px; border-radius: 30px; border: 2px solid #eee; outline: none; font-size: 1rem; box-sizing: border-box; }
+  /* Search Box */
+  .search-container { margin: 10px auto; width: 90%; max-width: 500px; }
+  .search-box { width: 100%; padding: 12px 25px; border-radius: 30px; border: none; outline: none; font-size: 1rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
 
+  /* Products Grid */
   #products { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; padding: 20px; max-width: 1300px; margin: auto; }
   .product { background: white; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.05); transition: 0.3s; display: flex; flex-direction: column; justify-content: space-between; }
-  .product:hover { transform: translateY(-5px); }
   .product img { width: 100%; height: 200px; object-fit: cover; border-radius: 15px; margin-bottom: 10px; }
   
   .add-btn { background: #ff6f61; color: white; border: none; padding: 10px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; margin-bottom: 5px; }
   .wish-btn { background: #f0f0f0; color: #333; border: none; padding: 8px; border-radius: 10px; width: 100%; cursor: pointer; font-size: 0.8rem; }
   .dark .wish-btn { background: #444; color: #eee; }
 
-  #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; display: flex; justify-content: center; align-items: center; }
-  .login-box { background: white; padding: 30px; border-radius: 20px; text-align: center; width: 300px; }
-  input[type="text"], input[type="password"] { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
+  /* Login Overlay */
+  #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; display: flex; justify-content: center; align-items: center; }
+  .login-box { background: white; padding: 35px; border-radius: 25px; text-align: center; width: 320px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+  input[type="text"], input[type="password"] { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; outline: none; }
 </style>
 </head>
 <body>
 
 <div id="loginOverlay">
   <div class="login-box">
-    <h2 style="color:#ff6f61;">Store Login</h2>
+    <h2 style="color:#ff6f61; margin-top:0;">Store Login 🔑</h2>
     <input type="text" id="username" placeholder="Username (admin)">
     <input type="password" id="password" placeholder="Password (1234)">
-    <p id="loginError" style="color: red; display: none; font-size: 0.8rem;">Wrong username or password!</p>
-    <button class="add-btn" onclick="login()">Login</button>
+    <p id="loginError" style="color: red; display: none; font-size: 0.8rem;">Galat hai bhai! Dobara try karo.</p>
+    <button class="add-btn" onclick="login()">Login Karein</button>
   </div>
 </div>
 
 <header id="mainHeader" class="hidden">
-  <h1>🛒 Datta & Ajay Mega Store</h1>
+  <h1 style="margin:0;">🛒 Datta & Ajay Mega Store</h1>
+  
   <div class="nav-buttons">
-    <button class="btn admin-btn" onclick="alert('Admin Panel Opening...')">🔑 Admin</button>
+    <button class="btn admin-btn" onclick="alert('Admin Panel: Work in Progress!')">🔑 Admin</button>
     <button class="btn" onclick="toggleDark()">🌙 Dark Mode</button>
-    <button class="btn">❤️ Wishlist</button>
+    <button class="btn" onclick="alert('Wishlist empty hai!')">❤️ Wishlist</button>
     <button class="btn">🛒 Cart (<span id="cartCount">0</span>)</button>
   </div>
+
   <div class="search-container">
-    <input type="text" id="searchBox" class="search-box" onkeyup="searchItems()" placeholder="Search clothes, electronics, accessories...">
+    <input type="text" id="searchBox" class="search-box" onkeyup="searchItems()" placeholder="Search Saree, Shoes, Watch...">
   </div>
 </header>
 
@@ -67,7 +72,7 @@
 
 <script>
 const products = [
-  // Original 8 Products
+  // Aapke Original 8 Products
   {id:1, name:"T-Shirt", price:500, image:"https://www.freeiconspng.com/uploads/blank-t-shirt-png-16.jpg"},
   {id:2, name:"Shoes", price:1500, image:"https://www.pngall.com/wp-content/uploads/5/Men-Shoes-PNG-Image-File.png"},
   {id:3, name:"Watch", price:2000, image:"https://i.postimg.cc/66k6BKX7/1805QM04-1.jpg"},
@@ -77,7 +82,7 @@ const products = [
   {id:7, name:"White Shirt", price:299, image:"https://i.postimg.cc/L5bHPdY2/IMG-20260328-WA0044.jpg"},
   {id:8, name:"Silk Saree", price:1499, image:"https://i.postimg.cc/jqGQHDzF/IMG-20260325-WA0001.jpg"},
   
-  // Extra 12 Products
+  // Mere Add Kiye Hue Products
   {id:9, name:"Gaming Mouse", price:1200, image:"https://images.unsplash.com/photo-1527814050087-379371549a28?w=400"},
   {id:10, name:"Smart Watch Pro", price:3500, image:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400"},
   {id:11, name:"Leather Wallet", price:999, image:"https://images.unsplash.com/photo-1627123424574-724758594e93?w=400"},
@@ -86,15 +91,12 @@ const products = [
   {id:14, name:"Blue Denim Jeans", price:1800, image:"https://images.unsplash.com/photo-1542272604-787c3835535d?w=400"},
   {id:15, name:"Premium Coffee Mug", price:400, image:"https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400"},
   {id:16, name:"Classic Aviators", price:1250, image:"https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400"},
-  {id:17, name:"Fitness Band Z", price:1999, image:"https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=400"},
-  {id:18, name:"Laptop Stand", price:850, image:"https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400"},
-  {id:19, name:"USB-C Fast Charger", price:600, image:"https://images.unsplash.com/photo-1618218168350-6e7c81151b64?w=400"},
-  {id:20, name:"Duffle Gym Bag", price:1100, image:"https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400"}
+  {id:17, name:"Fitness Band Z", price:1999, image:"https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=400"}
 ];
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
-let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
 
+// --- LOGIN ---
 function login(){
   const u = document.getElementById("username").value.trim();
   const p = document.getElementById("password").value.trim();
@@ -107,68 +109,61 @@ function login(){
   }
 }
 
-function showStore(itemsToDisplay = products){
+// --- STORE DISPLAY ---
+function showStore(items = products){
   document.getElementById("mainHeader").classList.remove("hidden");
   document.getElementById("products").classList.remove("hidden");
-  updateCartCount();
   
   const container = document.getElementById("products");
   container.innerHTML = "";
   
-  itemsToDisplay.forEach(p => {
+  items.forEach(p => {
     const div = document.createElement("div");
     div.classList.add("product");
     div.innerHTML = `
-      <img src="${p.image}" alt="${p.name}"> 
+      <img src="${p.image}"> 
       <h3>${p.name}</h3> 
       <p style="font-weight:bold; color:#ff6f61;">₹${p.price}</p> 
       <div>
         <button class="add-btn" onclick="addToCart(${p.id})">Add to Cart</button> 
-        <button class="wish-btn" onclick="addToWishlist(${p.id})">❤️ Wishlist</button>
+        <button class="wish-btn" onclick="alert('Added to wishlist!')">❤️ Wishlist</button>
       </div>
     `;
     container.appendChild(div);
   });
+  updateCartUI();
 }
 
-// --- SEARCH LOGIC ---
+// --- SEARCH ---
 function searchItems() {
   const term = document.getElementById("searchBox").value.toLowerCase();
   const filtered = products.filter(p => p.name.toLowerCase().includes(term));
   showStore(filtered);
 }
 
+// --- CART ---
 function addToCart(id){
   let item = products.find(p => p.id === id);
-  let exist = cart.find(c => c.id === id);
-  if(exist) exist.qty += 1; 
-  else { item.qty = 1; cart.push({...item}); }
+  cart.push(item);
   localStorage.setItem("cart", JSON.stringify(cart));
-  updateCartCount();
-  alert(item.name + " added to cart! ✅");
+  updateCartUI();
+  alert(item.name + " cart mein add ho gaya! ✅");
 }
 
-function updateCartCount(){ 
+function updateCartUI(){ 
   document.getElementById("cartCount").innerText = cart.length; 
-}
-
-function addToWishlist(id){
-  let item = products.find(p => p.id === id);
-  if(!wishlist.find(w => w.id === id)) {
-    wishlist.push(item);
-    localStorage.setItem("wishlist", JSON.stringify(wishlist));
-    alert("Added to Wishlist! ❤️");
-  }
 }
 
 function toggleDark(){ document.body.classList.toggle("dark"); }
 
-document.addEventListener("DOMContentLoaded", () => {
+// --- PAGE LOAD ---
+window.onload = () => {
   if(localStorage.getItem("loggedInUser")) {
     document.getElementById("loginOverlay").style.display="none";
     showStore();
   }
-});
+};
 </script>
 </body>
-  </html>    
+  </html>
+  
