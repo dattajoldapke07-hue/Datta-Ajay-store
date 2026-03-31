@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
 <h2 style="text-align:center; margin-top:20px;">🛒 Your Cart</h2>
 <div id="cartItems" style="text-align:center;"></div>
 <div style="text-align:center; margin-top:20px;">
@@ -13,26 +14,27 @@
 </div>
 
 <script>
-function loadCart() {
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+function showCart(){
   const container = document.getElementById("cartItems");
   container.innerHTML = "";
-  if (cart.length === 0) {
-    container.innerHTML = "<p>Cart is empty 😢</p>";
+  if(cart.length === 0){
+    container.innerHTML = "<p>Cart is empty</p>";
     return;
   }
   cart.forEach(i => {
     container.innerHTML += `<p>${i.name} x ${i.qty} = ₹${i.price * i.qty}</p>`;
   });
 }
+showCart();
 
-function checkout() {
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  if (cart.length === 0) { alert("Cart is empty!"); return; }
+function checkout(){
+  if(cart.length === 0){ alert("Cart empty!"); return; }
   window.location.href = "payment.html";
 }
-
-loadCart();
 </script>
+
 </body>
+</html></body>
 </html>
