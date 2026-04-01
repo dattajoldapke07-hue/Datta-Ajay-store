@@ -2,73 +2,169 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Checkout - Secure Payment</title>
+<title>Invoice</title>
+
 <style>
-  body { margin: 0; font-family: Arial; background: linear-gradient(135deg,#ff9a9e,#fad0c4,#fbc2eb); text-align: center; padding: 20px; }
-  .checkout-box { background: white; color: #333; margin: 20px auto; padding: 25px; width: 90%; max-width: 400px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: left; }
-  input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
-  .pay-btn { width: 100%; padding: 15px; background: #ff6f61; color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 1.1rem; font-weight: bold; margin-top: 10px; }
-  .pay-btn:hover { background: #e65b50; }
-  h2 { text-align: center; margin-top: 0; color: #ff6f61; }
-  label { font-weight: bold; font-size: 0.9rem; }
+body {
+  margin:0;
+  font-family: Arial;
+  background:#f4f7f6;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+}
+
+.invoice-box {
+  background:white;
+  padding:25px;
+  width:95%;
+  max-width:400px;
+  border-radius:12px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+.header {
+  text-align:center;
+  border-bottom:2px dashed #ccc;
+  padding-bottom:10px;
+}
+
+.header h2 {
+  margin:0;
+  color:#ff6f61;
+}
+
+.details {
+  margin:15px 0;
+  font-size:14px;
+}
+
+.items {
+  margin-top:10px;
+}
+
+.item {
+  display:flex;
+  justify-content:space-between;
+  font-size:14px;
+  padding:5px 0;
+  border-bottom:1px solid #eee;
+}
+
+.total {
+  margin-top:10px;
+  font-weight:bold;
+  font-size:16px;
+  text-align:right;
+}
+
+.footer {
+  margin-top:15px;
+  text-align:center;
+  font-size:12px;
+  border-top:2px dashed #ccc;
+  padding-top:10px;
+}
+
+.btn {
+  margin-top:15px;
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:8px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.view-btn { background:#007bff; color:white; }
+.home-btn { background:#333; color:white; }
 </style>
 </head>
+
 <body>
 
-<div class="checkout-box">
-  <h2>Customer Details</h2>
-  
-  <label>Full Name *</label>
-  <input type="text" id="custName" placeholder="Enter your name">
-  
-  <label>Mobile Number *</label>
-  <input type="number" id="custPhone" placeholder="Enter 10 digit mobile">
+<div class="invoice-box">
 
-  <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
-  
-  <h2>Payment Method</h2>
-  
-  <div id="upiSection">
-    <label>UPI ID (e.g. name@upi)</label>
-    <input type="text" id="upiInput" placeholder="Enter UPI ID">
-    <button class="pay-btn" onclick="validateAndPay('UPI')">Pay with UPI</button>
+  <div class="header">
+    <h2>Datta & Ajay Store</h2>
+    <p>🧾 Invoice Receipt</p>
   </div>
 
-  <button class="pay-btn" style="background:#28a745; margin-top: 20px;" onclick="validateAndPay('COD')">Cash on Delivery</button>
+  <div class="details" id="invoiceDetails"></div>
+
+  <div class="items" id="invoiceItems"></div>
+
+  <div class="total" id="invoiceTotal"></div>
+
+  <div class="footer">
+    Thank you for shopping! ❤️ <br>
+    Delivery in 3-5 days
+  </div>
+
+  <button class="btn view-btn" onclick="window.location.href='index.html'">
+    🛍️ Back to Store
+  </button>
+
 </div>
 
 <script>
-function validateAndPay(method) {
-  let name = document.getElementById("custName").value.trim();
-  let phone = document.getElementById("custPhone").value.trim();
-  let upi = document.getElementById("upiInput").value.trim();
+let method = localStorage.getItem("paymentMethod");
+let cust = JSON.parse(localStorage.getItem("tempCustomer")) || { name: "Guest", phone: "N/A" };
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-  // 1. Basic Validation
-  if (name === "" || name.length < 3) {
-    alert("❌ Please enter your valid Full Name");
-    return;
-  }
-  if (phone === "" || phone.length < 10) {
-    alert("❌ Please enter a valid 10-digit Mobile Number");
-    return;
-  }
+let total = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+let orderId = "#ORD" + Math.floor(Math.random() * 10000);
 
-  // 2. UPI Specific Validation
-  if (method === 'UPI') {
-    if (!upi.includes("@")) {
-      alert("❌ Invalid UPI ID! '@' is missing.");
-      return;
-    }
-  }
+// DETAILS
+document.getElementById("invoiceDetails").innerHTML = `
+  <b>Order ID:</b> ${orderId}<br>
+  <b>Name:</b> ${cust.name}<br>
+  <b>Mobile:</b> ${cust.phone}<br>
+  <b>Date:</b> ${new Date().toLocaleDateString()}<br>
+  <b>Time:</b> ${new Date().toLocaleTimeString()}<br>
+  <b>Payment:</b> ${method}
+`;
 
-  // 3. Save Customer Info temporarily
-  localStorage.setItem("tempCustomer", JSON.stringify({ name: name, phone: phone }));
-  localStorage.setItem("paymentMethod", method);
-  
-  // Go to success
-  window.location.href = "success.html";
+// ITEMS
+let itemsHTML = "";
+cart.forEach(i => {
+  itemsHTML += `
+    <div class="item">
+      <span>${i.name} x ${i.qty}</span>
+      <span>₹${i.price * i.qty}</span>
+    </div>
+  `;
+});
+document.getElementById("invoiceItems").innerHTML = itemsHTML;
+
+// TOTAL
+document.getElementById("invoiceTotal").innerText = "Total: ₹" + total;
+
+// SAVE ORDER
+if (cart.length > 0) {
+  let orderData = {
+    id: orderId,
+    customer: cust.name,
+    mobile: cust.phone,
+    date: new Date().toLocaleString(),
+    items: cart,
+    total: total,
+    payment: method
+  };
+
+  let allOrders = JSON.parse(localStorage.getItem("allOrders")) || [];
+  allOrders.push(orderData);
+  localStorage.setItem("allOrders", JSON.stringify(allOrders));
+
+  let myOrders = JSON.parse(localStorage.getItem("myOrders")) || [];
+  myOrders.push(orderData);
+  localStorage.setItem("myOrders", JSON.stringify(myOrders));
+
+  localStorage.removeItem("cart");
+  localStorage.removeItem("tempCustomer");
 }
 </script>
+
 </body>
 </html>
